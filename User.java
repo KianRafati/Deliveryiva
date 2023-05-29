@@ -8,7 +8,6 @@ public abstract class User {
     String securityQ;
     User currUser = null;
     static ArrayList<User> users;
-    Page startPage;
     
     //********************************************************************
 
