@@ -1,8 +1,8 @@
 package lib.Page.Authintication_Page;
 
 import java.util.Scanner;
-
 import lib.Page.Page;
+import src.User;
 
 public class Authintication_Page extends Page {
     private static Authintication_Page instance = null;
@@ -26,6 +26,7 @@ public class Authintication_Page extends Page {
 
         switch (counter) {
             case 0:
+                String[] temp = input.split("\\s");
                 
                 break;
             case 1:
