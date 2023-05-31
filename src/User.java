@@ -1,3 +1,4 @@
+package src;
 import java.util.ArrayList;
 
 public abstract class User {
@@ -6,7 +7,7 @@ public abstract class User {
     String username;
     String password;
     String securityQ;
-    User currUser = null;
+    static User currUser = null;
     static ArrayList<User> users;
     
     //********************************************************************
