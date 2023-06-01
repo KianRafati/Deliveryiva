@@ -1,7 +1,7 @@
 package lib.Page.Authintication_Page;
 
 import lib.Page.Page;
-import lib.RestaurantAdminPage.RestaurantAdminPage;
+import lib.Page.RestaurantAdminPage.RestaurantAdminPage;
 import src.PageHandler;
 import src.RestaurantAdmin;
 import src.User;

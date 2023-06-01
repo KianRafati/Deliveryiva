@@ -1,4 +1,4 @@
-package lib.RestaurantAdminPage;
+package lib.Page.RestaurantAdminPage;
 
 public enum RestaurantAdminPageCommands {
     DISPLAY("display my restaurants"), // 0

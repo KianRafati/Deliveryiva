@@ -1,4 +1,4 @@
-package lib.RestaurantAdminPage;
+package lib.Page.RestaurantAdminPage;
 
 import lib.Page.Page;
 import src.Restaurant;
