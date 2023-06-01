@@ -1,20 +1,21 @@
 package src;
+
 import java.util.ArrayList;
 
 public abstract class User {
-    //********************************************************************
+    // ********************************************************************
 
     String username;
     String password;
     String securityQ;
-    static User currUser = null;
-    static ArrayList<User> users;
-    
-    //********************************************************************
+    public static User currUser = null;
+    static ArrayList<User> users = new ArrayList<>();
 
-    static void CreateUser(String name, String password ,int type){
+    // ********************************************************************
+
+    public static void CreateUser(String name, String password, int type) {
         for (User user : users) {
-            if(user.username.equals(name)){
+            if (user.username.equals(name)) {
                 System.out.println("The entered username must be unique");
                 return;
             }
@@ -42,10 +43,10 @@ public abstract class User {
         System.out.println("Registered successfully!");
     }
 
-    static void LoginUser(String name,String password){
+    public static void LoginUser(String name, String password) {
         for (User user : users) {
-            if(user.username.equals(name)){
-                if(user.password.equals(password)){
+            if (user.username.equals(name)) {
+                if (user.password.equals(password)) {
                     currUser = user;
                     System.out.println("Logged in successfully!");
                     return;
@@ -57,19 +58,20 @@ public abstract class User {
         System.out.println("User does not exist, please enter a valid username.");
     }
 
-    void Logout(){
-        if(currUser == null){
+    public static void Logout() {
+        if (currUser == null) {
             System.out.println("Please log in first!");
         }
         currUser = null;
+        System.out.println("Logged out successfully");
         return;
     }
 
-    void ChangePass(String oldPass, String newPass){
+    void ChangePass(String oldPass, String newPass) {
 
     }
 
-    void ForgetPass(String answer){
+    void ForgetPass(String answer) {
 
     }
 

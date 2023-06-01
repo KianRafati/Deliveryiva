@@ -1,16 +1,19 @@
 package src;
 
+import java.util.Scanner;
+
 import lib.Page.*;
-import lib.Page.StartPage1.StartPage1;
 
 public class PageHandler {
     private static Page currPage;
+    private static boolean run = true;
+    private static Scanner scanner = new Scanner(System.in);
 
     private static void init() {
         if (User.currUser == null)
             currPage = StartPage0.getInstance();
-        else
-            currPage = new StartPage1();
+        // else
+        //     currPage = new StartPage1();
     }
 
     public static void changePage(Page newPage) {
@@ -18,15 +21,24 @@ public class PageHandler {
     }
 
     public static void showPage() {
+        String input = "";
         init();
-        if (currPage == null) {
-            terminate();
-            return;
+        while (run) {
+            if (input.equals("exit")) {
+                System.out.println("Are you sure you want to quit the application? Y/N");
+                input = scanner.nextLine();
+                if(input.equals("Y")){
+                    terminate();
+                    return;
+                }else if(input.equals("N"))
+                    continue;
+            }
+            currPage.run(input);
+            input = scanner.nextLine();
         }
-        currPage.run();
     }
 
     private static void terminate() {
-
+        run = false;
     }
 }
