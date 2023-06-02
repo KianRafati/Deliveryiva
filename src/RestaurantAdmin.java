@@ -14,4 +14,7 @@ public class RestaurantAdmin extends User {
     public ArrayList<Restaurant> getRests(){
         return this.restaurants;
     }
+
+
+    
 }

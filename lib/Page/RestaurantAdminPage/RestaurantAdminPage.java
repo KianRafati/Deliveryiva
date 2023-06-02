@@ -1,12 +1,13 @@
 package lib.Page.RestaurantAdminPage;
 
 import lib.Page.Page;
+import src.Node;
 import src.Restaurant;
 import src.RestaurantAdmin;
 import src.User;
 
 public class RestaurantAdminPage extends Page {
-
+    int id;
     private static RestaurantAdminPage instance = null;
 
     private RestaurantAdminPage() {
@@ -22,6 +23,7 @@ public class RestaurantAdminPage extends Page {
 
     @Override
     public void run(String input) {
+
         System.out.println("***********Restaurant admin page***********");
 
         if (inputCount == 0) {
@@ -42,29 +44,62 @@ public class RestaurantAdminPage extends Page {
                     break;
                 case 2: // add rest
                     String[] temp2 = input.split("\\s");
-                    addRest(temp2[2]);
+                    addRest(temp2[2],Integer.valueOf(temp2[4]));
                     break;
                 case 3:// del rest
                     String[] temp3 = input.split("\\s");
-                    deleteRest(temp3[2], Integer.valueOf(temp3[5]));
+                    id = Integer.valueOf(temp3[2]);
+                    AreYouSure();
                     break;
                 default:
                     break;
             }
         } else if (inputCount == 1) { // gets the ID to select the rest
+            inputCount = 0;
             int enteredID = Integer.valueOf(input);
             selectRest(enteredID);
+        } else if(inputCount == 2){
             inputCount = 0;
+            if(input.equals("Y"))
+                deleteRest(id);
+            else if(input.equals("N"))
+                return;
         }
 
     }
 
-    private void addRest(String name) {
+    private void addRest(String name, int nodeNum) {
 
+        for (Node node : Node.occupiedNodes) {
+            if(node.getNum() == nodeNum){
+                System.out.println("You can't place a restaurant here! it is occupied by a another restaurant.");
+                return;
+            }
+        }
+
+        Node location = new Node();
+        Node.occupiedNodes.add(location);
+        Restaurant restaurant = new Restaurant(name,location,((RestaurantAdmin) User.currUser).getRests().size()+1);
+        ((RestaurantAdmin) User.currUser).getRests().add(restaurant);
+        System.out.println("Restaurant added successfully");
     }
 
-    private void deleteRest(String name, int id) {
+    private void AreYouSure(){
+        System.out.println("Are you sure you want to delete this restaurant? (all orders and profit will be deleted) Y/N");
+        inputCount = 2;
+    }
 
+    private void deleteRest(int id) {
+        if(inputCount == 0){
+            for (Restaurant restaurant : ((RestaurantAdmin)User.currUser).getRests()) {
+                if(id == restaurant.getID()){
+                    ((RestaurantAdmin)User.currUser).getRests().remove(restaurant);
+                    restaurant = null;
+                    System.out.println("Restaurant deleted successfully");
+                    return;
+                }
+            }
+        }
     }
 
     private void selectRest(String restName) {
@@ -92,7 +127,7 @@ public class RestaurantAdminPage extends Page {
         for (Restaurant restaurant : ((RestaurantAdmin) User.currUser).getRests()) {
             if(restaurant.getID() == id){
                 ((RestaurantAdmin) User.currUser).currRestaurant = restaurant;
-                
+
             }
         }
     }
