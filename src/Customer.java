@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Customer extends User {
 
@@ -38,25 +39,53 @@ public class Customer extends User {
         }
     }
 
-    void Search(String restName){
+    void SearchRest(String restName){
         ArrayList<Integer> ID = new ArrayList<>();
         ID.clear();
         for (Restaurant rest: localRests) {
-            if (rest.name.contains(restName))
-                ID.add(rest.ID);
+            if (rest.getName().contains(restName))
+                ID.add(rest.getID());
         }
         for (Integer restID: ID) {
             for (Restaurant rest: localRests){
-                if (rest.ID == restID)
-                    System.out.println(rest.name + " " + rest.ID);
+                if (rest.getID() == restID)
+                    System.out.println(rest.getName() + " " + rest.getID());
             }
         }
     }
 
-    void Select(int id){
+    void SelectRest(int id){
         for (Restaurant rest: localRests){
-            if (rest.ID == id)
+            if (rest.getID() == id) {
                 currRest = rest;
+                clickedRests.add(rest);
+                ShowMenu(currRest);
+            }
         }
     }
+
+    void ShowMenu(Restaurant rest){
+        for (Food food: rest.getMenu()) {
+            System.out.println(food.getName()+" "+food.getPrice()+" "+food.getID());
+        }
+    }
+    void SearchFood(String name){
+        ArrayList<Integer> ID = new ArrayList<>();
+        ID.clear();
+        for (Food food: currRest.getMenu()) {
+            if (food.getName().contains(name))
+                ID.add(food.getID());
+        }
+        for (Integer foodID: ID) {
+            for (Food food: currRest.getMenu()){
+                if (food.getID() == foodID)
+                    System.out.println(food.getName()+" "+food.getPrice()+" "+food.getID());
+            }
+        }
+    }
+     void SelectFood (int ID){
+
+     }
+
+
 }
