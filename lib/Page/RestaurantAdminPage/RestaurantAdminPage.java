@@ -1,7 +1,9 @@
 package lib.Page.RestaurantAdminPage;
 
 import lib.Page.Page;
+import lib.Page.RestaurantPage.RestaurantPage;
 import src.Node;
+import src.PageHandler;
 import src.Restaurant;
 import src.RestaurantAdmin;
 import src.User;
@@ -10,8 +12,7 @@ public class RestaurantAdminPage extends Page {
     int id;
     private static RestaurantAdminPage instance = null;
 
-    private RestaurantAdminPage() {
-    }
+    private RestaurantAdminPage() {}
 
     public static RestaurantAdminPage getInstance() {
         if (instance == null)
@@ -44,7 +45,7 @@ public class RestaurantAdminPage extends Page {
                     break;
                 case 2: // add rest
                     String[] temp2 = input.split("\\s");
-                    addRest(temp2[2],Integer.valueOf(temp2[4]));
+                    addRest(temp2[2],Integer.valueOf(temp2[5]));
                     break;
                 case 3:// del rest
                     String[] temp3 = input.split("\\s");
@@ -80,6 +81,8 @@ public class RestaurantAdminPage extends Page {
         Node location = new Node();
         Node.occupiedNodes.add(location);
         Restaurant restaurant = new Restaurant(name,location,((RestaurantAdmin) User.currUser).getRests().size()+1);
+        RestaurantPage page = new RestaurantPage(restaurant);
+        restaurant.setPage(page);
         ((RestaurantAdmin) User.currUser).getRests().add(restaurant);
         System.out.println("Restaurant added successfully");
     }
@@ -112,9 +115,12 @@ public class RestaurantAdminPage extends Page {
             System.out.println("There's no restaurant named " + restName);
         else if (rcount == 1) {
             for (Restaurant restaurant : ((RestaurantAdmin) User.currUser).getRests())
-            if (restName.equals(restaurant.getName()))
-                rcount++;
-            
+                if (restName.equals(restaurant.getName())){
+                    ((RestaurantAdmin) User.currUser).currRestaurant = restaurant;
+                    PageHandler.changePage(restaurant.page);
+                    System.out.println("Selected restaurant "+restaurant.getName()+" with ID "+restaurant.getID());
+                    return; 
+                }
         } else {
             showRestWithSameName(restName);
             System.out.println("Please enter ID of your restaurant");
@@ -127,7 +133,9 @@ public class RestaurantAdminPage extends Page {
         for (Restaurant restaurant : ((RestaurantAdmin) User.currUser).getRests()) {
             if(restaurant.getID() == id){
                 ((RestaurantAdmin) User.currUser).currRestaurant = restaurant;
-
+                PageHandler.changePage(restaurant.page);
+                System.out.println("Selected restaurant "+restaurant.getName()+" with ID "+restaurant.getID());
+                return;
             }
         }
     }
