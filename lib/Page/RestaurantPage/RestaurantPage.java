@@ -1,6 +1,7 @@
 package lib.Page.RestaurantPage;
 
 import lib.Page.Page;
+import src.PageHandler;
 import src.Restaurant;
 
 public class RestaurantPage extends Page {
@@ -14,6 +15,11 @@ public class RestaurantPage extends Page {
     @Override
     public void run(String input) {
         String delfood = null;
+
+        if(input.equals("back")){
+            PageHandler.changePage(this.previousPage);
+            return;
+        }
 
         System.out.println("***********" + restaurant.getName() + "'s Restaurant page***********");
 
@@ -76,7 +82,7 @@ public class RestaurantPage extends Page {
                     break;
                 case 10: // edit order state
                     String[] temp10 = input.split("\\s");
-                    if(!restaurant.editOrder(Integer.parseInt(temp10[4]),temp10[7]))
+                    if (!restaurant.editOrder(Integer.parseInt(temp10[4]), temp10[7]))
                         return;
                     break;
                 case 11:// display open orders
@@ -91,9 +97,6 @@ public class RestaurantPage extends Page {
                 restaurant.delFoodSure(delfood);
             else if (input.equals("N"))
                 return;
-        } else if (inputCount == 2) {
-            inputCount = 0;
-
         }
 
     }

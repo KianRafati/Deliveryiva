@@ -3,6 +3,7 @@ package src;
 import java.util.Scanner;
 
 import lib.Page.*;
+import lib.Page.Authintication_Page.Authintication_Page;
 
 public class PageHandler {
     public static Page currPage;
@@ -30,6 +31,15 @@ public class PageHandler {
                 if(input.equals("Y")){
                     terminate();
                     return;
+                }else if(input.equals("N"))
+                    continue;
+            }
+            if(input.equals("logout")){
+                System.out.println("You're about to logout are you sure? Y/N");
+                input = scanner.nextLine();
+                if(input.equals("Y")){
+                    User.Logout();
+                    PageHandler.changePage(Authintication_Page.getInstance());
                 }else if(input.equals("N"))
                     continue;
             }

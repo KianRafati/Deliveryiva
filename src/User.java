@@ -13,11 +13,11 @@ public abstract class User {
 
     // ********************************************************************
 
-    public static void CreateUser(String name, String password, int type) {
+    public static boolean CreateUser(String name, String password, int type) {
         for (User user : users) {
             if (user.username.equals(name)) {
                 System.out.println("The entered username must be unique");
-                return;
+                return false;
             }
         }
         switch (type) {
@@ -38,24 +38,26 @@ public abstract class User {
                 break;
             default:
                 System.out.println("INVALID USER TYPE ERROR!");
-                return;
+                return false;
         }
         System.out.println("Registered successfully!");
+        return true;
     }
 
-    public static void LoginUser(String name, String password) {
+    public static boolean LoginUser(String name, String password) {
         for (User user : users) {
             if (user.username.equals(name)) {
                 if (user.password.equals(password)) {
                     currUser = user;
                     System.out.println("Logged in successfully!");
-                    return;
+                    return true;
                 }
                 System.out.println("Password does not match!");
-                return;
+                return false;
             }
         }
         System.out.println("User does not exist, please enter a valid username.");
+        return false;
     }
 
     public static void Logout() {

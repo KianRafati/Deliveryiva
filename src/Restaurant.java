@@ -3,6 +3,7 @@ package src;
 import java.util.ArrayList;
 
 import lib.Page.Page;
+import lib.Page.FoodPage.FoodPage;
 import lib.Page.RestaurantPage.RestaurantPage;
 
 public class Restaurant {
@@ -125,6 +126,8 @@ public class Restaurant {
         }
 
         Food food = new Food(foodName, price, this.menu.size() + 1);
+        FoodPage page = new FoodPage(food,this);
+        food.setPage(page);
         this.menu.add(food);
         System.out.println("food successfully added to restaurant's menu");
         return true;

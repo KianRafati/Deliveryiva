@@ -15,7 +15,6 @@ public class Food {
         this.name = foodName;
         this.price = price;
         this.ID = ID;
-        this.active = true;
     }
 
 
@@ -35,8 +34,12 @@ public class Food {
         this.active = false;
     }
 
-
     public Page getPage() {
         return this.page;
     }
+
+    public void setPage(FoodPage page) {
+        this.page = page;
+    }
+
 }
