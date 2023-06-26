@@ -5,7 +5,7 @@ import java.util.Scanner;
 import lib.Page.*;
 
 public class PageHandler {
-    private static Page currPage;
+    public static Page currPage;
     private static boolean run = true;
     private static Scanner scanner = new Scanner(System.in);
 

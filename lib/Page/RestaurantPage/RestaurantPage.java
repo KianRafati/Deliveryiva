@@ -49,44 +49,45 @@ public class RestaurantPage extends Page {
                     delfood = temp4[2];
                     if (!restaurant.delFood(temp4[2]))
                         return;
-                    else{
+                    else {
                         inputCount = 1;
                         return;
                     }
                 case 5: // act food
                     String[] temp5 = input.split("\\s");
-
+                    if (!restaurant.actFood(temp5[2]))
+                        return;
                     break;
                 case 6: // deact food
                     String[] temp6 = input.split("\\s");
-
+                    if (!restaurant.actFood(temp6[2]))
+                        return;
                     break;
-                case 7:// show menu
-                    String[] temp7 = input.split("\\s");
-
+                case 7: // show menu
+                    restaurant.showMenu();
                     break;
                 case 8: // select food
-                    String[] temp8 = input.split("\\s");
-
+                    String[] temp7 = input.split("\\s");
+                    if (!restaurant.selectFood(temp7[2]))
+                        return;
                     break;
                 case 9: // order his
-                    String[] temp9 = input.split("\\s");
-
+                    restaurant.showOrderHis();
                     break;
                 case 10: // edit order state
                     String[] temp10 = input.split("\\s");
-
+                    if(!restaurant.editOrder(Integer.parseInt(temp10[4]),temp10[7]))
+                        return;
                     break;
                 case 11:// display open orders
-                    String[] temp11 = input.split("\\s");
-
+                    restaurant.showOpenOrders();
                     break;
                 default:
                     break;
             }
         } else if (inputCount == 1) { // deletes the selected food
             inputCount = 0;
-            if(input.equals("Y"))
+            if (input.equals("Y"))
                 restaurant.delFoodSure(delfood);
             else if (input.equals("N"))
                 return;

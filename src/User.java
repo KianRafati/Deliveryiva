@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public abstract class User {
     // ********************************************************************
 
-    String username;
-    String password;
-    String securityQ;
+    public String username;
+    public String password;
+    public String securityQ;
     public static User currUser = null;
     static ArrayList<User> users = new ArrayList<>();
 
