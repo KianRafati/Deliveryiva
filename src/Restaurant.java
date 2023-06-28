@@ -125,7 +125,7 @@ public class Restaurant {
             return false;
         }
 
-        Food food = new Food(foodName, price, this.menu.size() + 1);
+        Food food = new Food(foodName , price, this.menu.size() + 1);
         FoodPage page = new FoodPage(food,this);
         food.setPage(page);
         this.menu.add(food);
