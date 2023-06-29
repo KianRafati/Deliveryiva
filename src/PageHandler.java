@@ -11,6 +11,9 @@ public class PageHandler {
     private static Scanner scanner = new Scanner(System.in);
 
     private static void init() {
+       
+        User.receiveDB();
+
         if (User.currUser == null)
             currPage = StartPage0.getInstance();
         // else
@@ -50,5 +53,6 @@ public class PageHandler {
 
     private static void terminate() {
         run = false;
+        scanner.close();
     }
 }

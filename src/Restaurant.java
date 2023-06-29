@@ -8,6 +8,7 @@ import lib.Page.RestaurantPage.RestaurantPage;
 
 public class Restaurant {
     // ==============================================================================
+    
     private String name;
     private int ID;
     private Node location;
@@ -17,6 +18,7 @@ public class Restaurant {
     private ArrayList<Order> OrderHistory = new ArrayList<>();
     private ArrayList<Order> OpenOrders = new ArrayList<>();
     private boolean order = false;
+    private RestaurantAdmin owner = (RestaurantAdmin) User.currUser;
 
     // ==============================================================================
     public Restaurant(String name, Node location, int ID) {

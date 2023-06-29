@@ -32,63 +32,67 @@ public class Authintication_Page extends Page {
             counter++;
         }
 
-        switch (counter) {
-            case 0: // to restAdmin page
-                String[] temp0 = input.split("\\s");
-                if (User.CreateUser(temp0[3], temp0[4], 1)) {
-                    System.out.println("press Enter");
-                    RestaurantAdminPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(RestaurantAdminPage.getInstance());
-                } else
-                    return;
+        try {
+            switch (counter) {
+                case 0: // create restAdmin
+                    String[] temp0 = input.split("\\s");
+                    if (User.CreateUser(temp0[3], temp0[4], 1)) {
+                        System.out.println("press Enter");
+                        RestaurantAdminPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(RestaurantAdminPage.getInstance());
+                    } else
+                        return;
 
-                break;
-            case 1: // to customer page
-                String[] temp1 = input.split("\\s");
-                if (User.CreateUser(temp1[2], temp1[3], 2)) {
-                    System.out.println("press Enter");
-                    CustomerPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(CustomerPage.getInstance());
-                } else
-                    return;
+                    break;
+                case 1: // create customer
+                    String[] temp1 = input.split("\\s");
+                    if (User.CreateUser(temp1[2], temp1[3], 2)) {
+                        System.out.println("press Enter");
+                        CustomerPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(CustomerPage.getInstance());
+                    } else
+                        return;
 
-                break;
-            case 2: // to delivery page
-                String[] temp2 = input.split("\\s");
-                if (User.CreateUser(temp2[2], temp2[3], 3)) {
-                    System.out.println("press Enter");
-                    DeliveryPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(DeliveryPage.getInstance());
-                } else
-                    return;
+                    break;
+                case 2: // create delivery
+                    String[] temp2 = input.split("\\s");
+                    if (User.CreateUser(temp2[2], temp2[3], 3)) {
+                        System.out.println("press Enter");
+                        DeliveryPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(DeliveryPage.getInstance());
+                    } else
+                        return;
 
-                break;
-            case 3:// to restAdmin page
-                String[] temp3 = input.split("\\s");
-                if(User.LoginUser(temp3[3], temp3[4])){
-                    System.out.println("press Enter");
-                    RestaurantAdminPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(RestaurantAdminPage.getInstance());
-                }
-                break;
-            case 4: // to customer page
-                String[] temp4 = input.split("\\s");
-                if(User.LoginUser(temp4[3], temp4[4])){
-                    System.out.println("press Enter");
-                    CustomerPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(CustomerPage.getInstance());
-                }
-                break;
-            case 5:// to delivery page
-                String[] temp5 = input.split("\\s");
-                if(User.LoginUser(temp5[3], temp5[4])){
-                    System.out.println("press Enter");
-                    DeliveryPage.getInstance().previousPage = PageHandler.currPage;
-                    PageHandler.changePage(DeliveryPage.getInstance());
-                }
-                break;
-            default:
-                break;
+                    break;
+                case 3:// login restAdmin
+                    String[] temp3 = input.split("\\s");
+                    if (User.LoginUser(temp3[3], temp3[4])) {
+                        System.out.println("press Enter");
+                        RestaurantAdminPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(RestaurantAdminPage.getInstance());
+                    }
+                    break;
+                case 4: // login customer
+                    String[] temp4 = input.split("\\s");
+                    if (User.LoginUser(temp4[3], temp4[4])) {
+                        System.out.println("press Enter");
+                        CustomerPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(CustomerPage.getInstance());
+                    }
+                    break;
+                case 5:// login delivery
+                    String[] temp5 = input.split("\\s");
+                    if (User.LoginUser(temp5[3], temp5[4])) {
+                        System.out.println("press Enter");
+                        DeliveryPage.getInstance().previousPage = PageHandler.currPage;
+                        PageHandler.changePage(DeliveryPage.getInstance());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
