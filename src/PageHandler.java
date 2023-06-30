@@ -8,16 +8,13 @@ import java.io.IOException;
 import java.util.Scanner;
 import lib.Page.*;
 import lib.Page.Authintication_Page.Authintication_Page;
-import lib.Page.Authintication_Page.Authintication_Page;
 import lib.Page.CustomerPage.CustomerPage;
 import lib.Page.DeliveryPage.DeliveryPage;
 import lib.Page.RestaurantAdminPage.RestaurantAdminPage;
 
 public class PageHandler {
     public static Page currPage;
-    public static Page currPage;
     private static boolean run = true;
-    public static Scanner scanner = new Scanner(System.in);
     public static Scanner scanner = new Scanner(System.in);
 
     //TODO use a .json file to save the last user
