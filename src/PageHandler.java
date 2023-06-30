@@ -8,12 +8,13 @@ import lib.Page.Authintication_Page.Authintication_Page;
 public class PageHandler {
     public static Page currPage;
     private static boolean run = true;
-    private static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
 
     //TODO use a .json file to save the last user
     private static void init() {
        
         User.receiveDB();
+
 
         if (User.currUser == null)
             currPage = StartPage0.getInstance();
