@@ -10,14 +10,21 @@ public class PageHandler {
     private static boolean run = true;
     private static Scanner scanner = new Scanner(System.in);
 
+    //TODO use a .json file to save the last user
     private static void init() {
        
         User.receiveDB();
 
         if (User.currUser == null)
             currPage = StartPage0.getInstance();
-        // else
-        //     currPage = new StartPage1();
+        else{   
+            if(User.currUser instanceof RestaurantAdmin)
+                currPage = ((RestaurantAdmin)User.currUser).getPage();
+            else if (User.currUser instanceof Customer)
+                currPage = ((Customer)User.currUser).getPage();
+            else if(User.currUser instanceof Delivery)
+                currPage = ((Delivery)User.currUser).getPage();
+        }
     }
 
     public static void changePage(Page newPage) {

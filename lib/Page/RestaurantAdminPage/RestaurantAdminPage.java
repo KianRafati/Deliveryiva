@@ -10,18 +10,12 @@ import src.User;
 
 public class RestaurantAdminPage extends Page {
     int id;
-    private static RestaurantAdminPage instance = null;
-
-    private RestaurantAdminPage() {
-    }
-
-    public static RestaurantAdminPage getInstance() {
-        if (instance == null)
-            instance = new RestaurantAdminPage();
-        return instance;
-    }
-
     private int inputCount = 0;
+    private RestaurantAdmin restAdmin;
+    
+    public RestaurantAdminPage(RestaurantAdmin restAdmin){
+        this.restAdmin = restAdmin;
+    }
 
     @Override
     public void run(String input) {
@@ -168,4 +162,7 @@ public class RestaurantAdminPage extends Page {
         }
     }
 
+    public RestaurantAdmin getUser(){
+        return this.restAdmin;
+    }
 }
