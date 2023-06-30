@@ -6,8 +6,7 @@ import src.PageHandler;
 public class StartPage0 extends Page {
     private static StartPage0 instance = null;
 
-    private StartPage0() {
-    }
+    private StartPage0() {}
 
     public static StartPage0 getInstance() {
         if (instance == null)
