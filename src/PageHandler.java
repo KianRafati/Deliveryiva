@@ -17,7 +17,6 @@ public class PageHandler {
     private static boolean run = true;
     public static Scanner scanner = new Scanner(System.in);
 
-    //TODO use a .json file to save the last user
     private static void init() {
 
         User.receiveDB();
@@ -68,15 +67,6 @@ public class PageHandler {
                     User.Logout();
                     PageHandler.changePage(Authintication_Page.getInstance());
                 } else if (input.equals("N"))
-                    continue;
-            }
-            if(input.equals("logout")){
-                System.out.println("You're about to logout are you sure? Y/N");
-                input = scanner.nextLine();
-                if(input.equals("Y")){
-                    User.Logout();
-                    PageHandler.changePage(Authintication_Page.getInstance());
-                }else if(input.equals("N"))
                     continue;
             }
             currPage.run(input);
