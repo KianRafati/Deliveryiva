@@ -10,7 +10,12 @@ public enum FoodPageCommands {
     COMMENT("comment"), // 6
     RESPOND("respond to comment with ID \\d+"), // 7
     EDIT_RESPOND("edit respond with ID \\d+ to comment with ID \\d+"), // 8
-    DISPLAY_REPLAIES("display replies to comment with ID \\d+");
+    DISPLAY_REPLAIES("display replies to comment with ID \\d+"), // 9
+    ADD_TO_CART("add to cart \\d+"), // 10
+    EDIT_COMMENT("edit comment with ID \\d+"), // 11
+    RATE("rate \\d+"), // 12
+    EDIT_RATE("edit rating \\d+"); // 13
+
 
     String content;
     FoodPageCommands(String content){

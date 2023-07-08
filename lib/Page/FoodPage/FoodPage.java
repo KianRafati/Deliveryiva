@@ -1,9 +1,13 @@
 package lib.Page.FoodPage;
 
+import java.util.Currency;
+
 import lib.Page.Page;
+import src.Customer;
 import src.Food;
 import src.PageHandler;
 import src.Restaurant;
+import src.RestaurantAdmin;
 import src.User;
 
 public class FoodPage extends Page {
@@ -42,17 +46,23 @@ public class FoodPage extends Page {
                     this.food.DisplayComments();
                     break;
                 case 1: // edit name
-                    String[] temp0 = input.split("\\s");
-                    this.food.setName(temp0[2]);
+                    if (User.currUser instanceof RestaurantAdmin) {
+                        String[] temp0 = input.split("\\s");
+                        this.food.setName(temp0[2]);
+                    }
                     break;
                 case 2: // edit price
-                    String[] temp1 = input.split("\\s");
-                    this.food.setPrice(Double.parseDouble(temp1[2]));
+                    if (User.currUser instanceof RestaurantAdmin) {
+                        String[] temp1 = input.split("\\s");
+                        this.food.setPrice(Double.parseDouble(temp1[2]));
+                    }
                     break;
                 case 3:// add discount
-                    String[] temp2 = input.split("\\s");
-                    if (!this.food.setDiscount(Double.parseDouble(temp2[2]), Double.parseDouble(temp2[4])))
-                        return;
+                    if (User.currUser instanceof RestaurantAdmin) {
+                        String[] temp2 = input.split("\\s");
+                        if (!this.food.setDiscount(Double.parseDouble(temp2[2]), Double.parseDouble(temp2[4])))
+                            return;
+                    }
                     break;
                 case 4: // display rating
                     this.food.DisplayRatings();
@@ -92,7 +102,37 @@ public class FoodPage extends Page {
                 case 9: // display replies
                     String[] temp5 = input.split("\\s");
                     commentID = Integer.parseInt(temp5[6]);
-                    this.food.comments.get(commentID-1).displayReplies();
+                    this.food.comments.get(commentID - 1).displayReplies();
+                    break;
+                case 10: // adds to customer's cart
+                    if (User.currUser instanceof Customer) {
+                        String[] temp6 = input.split("\\s");
+                        ((Customer) User.currUser).addFoodToCart(this.food, Integer.parseInt(temp6[3]));
+                    }
+                    break;
+                case 11: // edit comment
+                    String[] temp6 = input.split("\\s");
+                    commentID = Integer.parseInt(temp6[4]);
+                    if (commentID < 0 || commentID > this.food.comments.size()) {
+                        System.out.println("this comment does not exist");
+                        System.out.println("please re-enter your request");
+                        return;
+                    }
+                    inputCount = 4;
+                    break;
+                case 12: // rate
+                    if (User.currUser instanceof Customer) {
+                        String[] temp1 = input.split("\\s");
+                        int amount = Integer.parseInt(temp1[1]);
+                        food.setRate((Customer) User.currUser, amount);
+                    }
+                    break;
+                case 13: // edit rating
+                    if (User.currUser instanceof Customer) {
+                        String[] temp1 = input.split("\\s");
+                        int amount = Integer.parseInt(temp1[2]);
+                        food.editRating(User.currUser, amount);
+                    }
                     break;
                 default:
                     break;
@@ -106,6 +146,10 @@ public class FoodPage extends Page {
         } else if (inputCount == 3) { // edit respond
             inputCount = 0;
             if (!this.food.editResond(commentID, respondID, User.currUser, input))
+                return;
+        } else if (inputCount == 4) { // edit comment
+            inputCount = 0;
+            if (!this.food.editComment(commentID, User.currUser, input))
                 return;
         }
     }

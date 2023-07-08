@@ -6,7 +6,7 @@ public class Order {
     private int ID;
     private Restaurant restaurant;
     private Customer customer;
-    private ArrayList<Food> contents = new ArrayList<>();
+    private ArrayList<Food> cart = new ArrayList<>();
     private String status;
     public static String[] statuses = {
         "Waiting for restuarant's approval..",
@@ -15,11 +15,11 @@ public class Order {
         "Your order has been delivered"
     };
 
-    Order(int ID,Restaurant restaurant,Customer customer,ArrayList<Food> contents){
+    Order(int ID,Restaurant restaurant,Customer customer,ArrayList<Food> cart){
         this.ID = ID;
         this.restaurant = restaurant;
         this.customer = customer;
-        this.contents = contents;
+        this.cart = cart;
         this.status = statuses[0];
     }
 
@@ -43,8 +43,8 @@ public class Order {
         return this.customer;
     }
 
-    public ArrayList<Food> getContents(){
-        return this.contents;
+    public ArrayList<Food> getCart(){
+        return this.cart;
     }
 
     public void EditOrder(){
@@ -67,11 +67,19 @@ public class Order {
 
     }
 
-    public void showContents(){
-        for (Food food : contents) {
+    public void showcart(){
+        for (Food food : cart) {
             System.out.println("--------------------------");
             System.out.println(food.getName());
             System.out.println(food.getPrice());
         }
+    }
+
+    public void DisplayStatus() {
+
+    }
+
+    public void ConfirmOrder() {
+        
     }
 }

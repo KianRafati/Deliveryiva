@@ -69,7 +69,26 @@ public abstract class User {
         }
     }
 
-    public static boolean CreateUser(String name, String password, int type) throws ClassNotFoundException, SQLException {
+    static void receiveRestDB() {
+        try {
+            establishConnection();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM restaurants;");
+            while (resultSet.next()) {
+                Node node = new Node();
+                node.setNumber(Integer.parseInt(resultSet.getString("location")));
+                Restaurant restaurant = new Restaurant(resultSet.getString("restaurant_name"), node,
+                        Integer.parseInt(resultSet.getString("restaurant_id")));
+                DeliveryivaSettings.getInstance().restaurants.add(restaurant);
+            }
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean CreateUser(String name, String password, int type)
+            throws ClassNotFoundException, SQLException {
         for (User user : users) {
             if (user.username.equals(name)) {
                 System.out.println("The entered username must be unique");
@@ -82,7 +101,8 @@ public abstract class User {
                 User user1 = new RestaurantAdmin(name, password);
                 user1.user_id = users.size();
                 User.users.add(user1);
-                String DBop1 = "INSERT INTO users(username,user_password,user_type) VALUES(\""+user1.username+"\",\""+user1.password+"\","+1+");";
+                String DBop1 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user1.username
+                        + "\",\"" + user1.password + "\"," + 1 + ");";
                 statement.execute(DBop1);
                 currUser = user1;
                 break;
@@ -90,7 +110,8 @@ public abstract class User {
                 User user2 = new Customer(name, password);
                 user2.user_id = users.size();
                 User.users.add(user2);
-                String DBop2 = "INSERT INTO users(username,user_password,user_type) VALUES(\""+user2.username+"\",\""+user2.password+"\","+2+");";
+                String DBop2 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user2.username
+                        + "\",\"" + user2.password + "\"," + 2 + ");";
                 statement.execute(DBop2);
                 currUser = user2;
                 break;
@@ -98,7 +119,8 @@ public abstract class User {
                 User user3 = new Delivery(name, password);
                 user3.user_id = users.size();
                 User.users.add(user3);
-                String DBop3 = "INSERT INTO users(username,user_password,user_type) VALUES(\""+user3.username+"\",\""+user3.password+"\","+2+");";
+                String DBop3 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user3.username
+                        + "\",\"" + user3.password + "\"," + 2 + ");";
                 statement.execute(DBop3);
                 currUser = user3;
                 break;

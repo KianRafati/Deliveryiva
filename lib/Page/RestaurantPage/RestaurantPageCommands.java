@@ -12,9 +12,19 @@ public enum RestaurantPageCommands {
     SELECT_FOOD("select food \\S+"), // 8 
     SHOW_ORDER_HIS("show order history"), // 9
     EDIT_ORDER("edit order with ID \\d+ with state \\S+"), // 10
-    DISPLAY_OPEN_ORDERS("display currently open orders"); // 11
+    DISPLAY_OPEN_ORDERS("display currently open orders"), // 11 
+    DISPLAY_COMMENTS_OF_REST("display comments"), // 12
+    COMMENT("comment"), // 13
+    EDIT_COMMENT("edit comment with ID \\d+"), // 14
+    RESPOND("respond to comment with ID \\d+"), // 15
+    EDIT_RESPOND("respond to comment with ID \\d+"), // 16
+    DISPLAY_REPLIES("display replies to comment with ID \\d+"), // 17
+    DISPLAY_RATING("display ratings"), // 18
+    RATE("rate \\d+"), // 19
+    EDIT_RATE("edit rating \\d+"); // 20
 
-    String content;
+
+    public String content;
     RestaurantPageCommands(String content){
         this.content = content;
     }

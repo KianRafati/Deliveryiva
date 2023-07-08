@@ -13,7 +13,7 @@ public class Food {
     private int ID;
     private boolean active;
     private FoodPage page;
-    private double totRating;
+    private Rating totRating;
     private ArrayList<Rating> Ratings = new ArrayList<>();
     private boolean isAvailable;
     private boolean hasDiscount;
@@ -84,7 +84,7 @@ public class Food {
             return;
         }
 
-        System.out.println(this.name+"'s rating:"+this.totRating);
+        System.out.println(this.name+"'s rating:"+this.totRating.amount);
     }
 
     public void DisplayComments(){
@@ -131,6 +131,19 @@ public class Food {
         System.out.println("thank you for your feedback");
     }
 
+    public boolean editComment(int commentID,User user, String content){
+        Comment comment = this.comments.get(commentID-1);
+        if(!comment.commenter.equals(user)){
+            System.out.println("This is not your comment!");
+            System.out.println("please re-enter your request");
+            return false;
+        }
+
+        comment.setContent(content);
+        System.out.println("Comment updated successfully");
+        return true;
+    }
+
     public void setResond(int commentID,User user, String input) {
         this.comments.get(commentID-1).setReply(user, input);
         System.out.println("reply set successfully");
@@ -150,4 +163,40 @@ public class Food {
 
     }
 
+    public Integer getID() {
+        return this.ID;
+    }
+
+    public Rating getRating(){
+        return this.totRating;
+    }
+
+    public ArrayList<Rating> getRatings(){
+        return this.Ratings;
+    }
+
+    public void setRate(Customer customer,int amount){
+        for (Rating rating : this.Ratings) {
+            if(customer.equals(rating.customer)){
+                System.out.println("you can not use this command you've rated this food");
+                return;
+            }
+        }
+        Rating rating = new Rating(this.Ratings.size(), amount, customer, this);
+        this.Ratings.add(rating);
+        System.out.println("Reply set successfully");
+    }
+
+    public boolean editRating(User user,int newAmount){
+        for (Rating rating : this.Ratings) {
+            if(rating.customer.equals(user)){
+                rating.amount = newAmount;
+                System.out.println("rating edited successfully");
+                return true;
+            }
+        }
+
+        System.out.println("you have not rated this food!");
+        return false;
+    }
 }

@@ -18,8 +18,8 @@ public class PageHandler {
     public static Scanner scanner = new Scanner(System.in);
 
     private static void init() {
-
         User.receiveDB();
+        User.receiveRestDB();
         readFile();
 
         if (User.currUser == null)

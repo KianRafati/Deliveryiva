@@ -8,12 +8,20 @@ public class Comment {
     public String content;
     public User commenter;
     public Food food;
+    public Restaurant restaurant;
 
     Comment(int ID, User commenter, String content, Food food) {
         this.ID = ID;
         this.commenter = commenter;
         this.content = content;
         this.food = food;
+    }
+
+    Comment(int ID, User commenter, String content, Restaurant restaurant) {
+        this.ID = ID;
+        this.commenter = commenter;
+        this.content = content;
+        this.restaurant = restaurant;
     }
 
     public void setContent(String content) {
