@@ -7,12 +7,14 @@ import lib.Page.CustomerPage.CustomerPage;
 
 public class Customer extends User {
 
-    Customer(String name, String password) {
+    Customer(String name, String password,int id) {
         this.username = name;
         this.password = password;
+        this.user_id = id;
     }
     // ********************************************************************
 
+    public Node location;
     ArrayList<Restaurant> localRests = new ArrayList<>();
     ArrayList<Restaurant> favRests = new ArrayList<>();
     ArrayList<Rating> foodRatings = new ArrayList<>();
@@ -34,8 +36,14 @@ public class Customer extends User {
     }
 
     public void ShowLocalRests() {
-        for (Restaurant rest : localRests) {
-
+        System.out.println("Your local restaurants are the following:");
+        for (Restaurant restaurant : this.localRests) {
+            System.out.println(restaurant.getName());
+            System.out.println("ID: "+restaurant.getID());
+            System.out.println("Rating: "+restaurant.calculateRating());
+            System.out.println("FoodType: "+restaurant.getFoodType());
+            System.out.println("location: "+restaurant.getLoc().getNum());
+            System.out.println("------------------------------------------------");
         }
     }
 
@@ -55,14 +63,15 @@ public class Customer extends User {
     }
 
     public boolean SelectRest(int id) {
-        if (id > DeliveryivaSettings.getInstance().restaurants.size()) {
+        if (id > this.localRests.size() && id < 0) {
             System.out.println("the restaurant with ID " + id + " is not in the menu!");
             System.out.println("please re-enter your request");
             return false;
         }
 
-        DeliveryivaSettings.getInstance().restaurants.get(id-1).getPage().previousPage = PageHandler.currPage;
-        PageHandler.changePage(DeliveryivaSettings.getInstance().restaurants.get(id-1).getPage());
+        this.localRests.get(id-1).getPage().previousPage = PageHandler.currPage;
+        User.receiveMenu(this.localRests.get(id-1));
+        PageHandler.changePage(this.localRests.get(id-1).getPage());
         return true;
     }
 

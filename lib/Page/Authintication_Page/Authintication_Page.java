@@ -74,6 +74,7 @@ public class Authintication_Page extends Page {
                     if (User.LoginUser(temp3[3], temp3[4])) {
                         System.out.println("press Enter");
                         RestaurantAdminPage RestAdminPage = new RestaurantAdminPage((RestaurantAdmin) User.currUser);
+                        User.receiveRests(((RestaurantAdmin) User.currUser).user_id);
                         RestAdminPage.previousPage = PageHandler.currPage;
                         PageHandler.changePage(RestAdminPage);
                         RestAdminPage.getUser().setPage(RestAdminPage);
@@ -84,6 +85,7 @@ public class Authintication_Page extends Page {
                     if (User.LoginUser(temp4[2], temp4[3])) {
                         System.out.println("press Enter");
                         CustomerPage customerPage = new CustomerPage((Customer) User.currUser);
+                        User.receiveLocalRests(((Customer) User.currUser).location.getNum());
                         customerPage.previousPage = PageHandler.currPage;
                         PageHandler.changePage(customerPage);
                         customerPage.getUser().setPage(customerPage);

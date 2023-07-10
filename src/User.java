@@ -1,6 +1,10 @@
 package src;
 
 import java.util.ArrayList;
+
+import lib.Page.FoodPage.FoodPage;
+import lib.Page.RestaurantPage.RestaurantPage;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -27,13 +31,13 @@ public abstract class User {
         this.securityQ = securityQ;
     }
 
-    private static void establishConnection() throws ClassNotFoundException, SQLException {
+    public static void establishConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection(url, SQLuser, SQLpassword);
         statement = connection.createStatement();
     }
 
-    private static void terminateConnection() throws SQLException {
+    public static void terminateConnection() throws SQLException {
         statement.close();
     }
 
@@ -45,17 +49,23 @@ public abstract class User {
                 switch (resultSet.getInt("user_type")) {
                     case 1:
                         RestaurantAdmin restAdmin = new RestaurantAdmin(resultSet.getString("username"),
-                                resultSet.getString("user_password"));
+                                resultSet.getString("user_password"),
+                                Integer.parseInt(resultSet.getString("user_id")));
                         users.add(restAdmin);
                         break;
                     case 2:
                         Customer customer = new Customer(resultSet.getString("username"),
-                                resultSet.getString("user_password"));
+                                resultSet.getString("user_password"),
+                                Integer.parseInt(resultSet.getString("user_id")));
+                        Node node = new Node();
+                        customer.location = node;
+                        customer.location.setNumber(Integer.parseInt(resultSet.getString("location")));
                         users.add(customer);
                         break;
                     case 3:
                         Delivery delivery = new Delivery(resultSet.getString("username"),
-                                resultSet.getString("user_password"));
+                                resultSet.getString("user_password"),
+                                Integer.parseInt(resultSet.getString("user_id")));
                         users.add(delivery);
                         break;
                     default:
@@ -69,22 +79,12 @@ public abstract class User {
         }
     }
 
-    static void receiveRestDB() {
-        try {
-            establishConnection();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM restaurants;");
-            while (resultSet.next()) {
-                Node node = new Node();
-                node.setNumber(Integer.parseInt(resultSet.getString("location")));
-                Restaurant restaurant = new Restaurant(resultSet.getString("restaurant_name"), node,
-                        Integer.parseInt(resultSet.getString("restaurant_id")));
-                DeliveryivaSettings.getInstance().restaurants.add(restaurant);
-            }
-            terminateConnection();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+    private static User getUser(int id) {
+        for (User user : users)
+            if (id == user.user_id)
+                return user;
 
+        return null;
     }
 
     public static boolean CreateUser(String name, String password, int type)
@@ -98,8 +98,7 @@ public abstract class User {
         establishConnection();
         switch (type) {
             case 1:
-                User user1 = new RestaurantAdmin(name, password);
-                user1.user_id = users.size();
+                User user1 = new RestaurantAdmin(name, password, users.size());
                 User.users.add(user1);
                 String DBop1 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user1.username
                         + "\",\"" + user1.password + "\"," + 1 + ");";
@@ -107,8 +106,7 @@ public abstract class User {
                 currUser = user1;
                 break;
             case 2:
-                User user2 = new Customer(name, password);
-                user2.user_id = users.size();
+                User user2 = new Customer(name, password, users.size());
                 User.users.add(user2);
                 String DBop2 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user2.username
                         + "\",\"" + user2.password + "\"," + 2 + ");";
@@ -116,8 +114,7 @@ public abstract class User {
                 currUser = user2;
                 break;
             case 3:
-                User user3 = new Delivery(name, password);
-                user3.user_id = users.size();
+                User user3 = new Delivery(name, password, users.size());
                 User.users.add(user3);
                 String DBop3 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user3.username
                         + "\",\"" + user3.password + "\"," + 2 + ");";
@@ -160,12 +157,160 @@ public abstract class User {
         return;
     }
 
-    void ChangePass(String oldPass, String newPass) {
+    public boolean ChangePass(String oldPass, String newPass) {
+        if(!oldPass.matches(this.password)){
+            System.out.println("Password incorrect");
+            System.out.println("please re-enter your request");
+            return false;
+        }
 
+        this.password = newPass;
+        updateSQL("users", "password", "user_id = "+this.user_id, newPass);
+        System.out.println("password changed successfully");
+        return true;
     }
 
     void ForgetPass(String answer) {
 
+    }
+
+    public static void receiveRests(int owner_id) {
+        try {
+            establishConnection();
+            ResultSet resultSet = statement
+                    .executeQuery("SELECT * FROM restaurants WHERE owner_id = " + owner_id + ";");
+            while (resultSet.next()) {
+                Node node = new Node();
+                node.setNumber(Integer.parseInt(resultSet.getString("location")));
+                Restaurant restaurant = new Restaurant(
+                        resultSet.getString("restaurant_name"),
+                        node,
+                        Integer.parseInt(resultSet.getString("restaurant_id")),
+                        Integer.parseInt(resultSet.getString("owner_id")));
+                // DeliveryivaSettings.getInstance().restaurants.add(restaurant);
+                ((RestaurantAdmin) getUser(Integer.parseInt(resultSet.getString("owner_id"))))
+                        .addRestaurant(restaurant);
+                RestaurantPage page = new RestaurantPage(restaurant);
+                restaurant.setPage(page);
+            }
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void receiveLocalRests(int user_location) {
+        try {
+            establishConnection();
+            int min = user_location - DeliveryivaSettings.getInstance().DELIVERYIVA_LOCAL_RANGE;
+            int max = user_location + DeliveryivaSettings.getInstance().DELIVERYIVA_LOCAL_RANGE;
+            ResultSet resultSet = statement
+                    .executeQuery("SELECT * FROM restaurants WHERE location > " + min + " AND location < " + max + ";");
+            while (resultSet.next()) {
+                Node node = new Node();
+                node.setNumber(Integer.parseInt(resultSet.getString("location")));
+                Restaurant restaurant = new Restaurant(
+                        resultSet.getString("restaurant_name"),
+                        node,
+                        Integer.parseInt(resultSet.getString("restaurant_id")),
+                        Integer.parseInt(resultSet.getString("owner_id")));
+                ((Customer) User.currUser).localRests.add(restaurant);
+                RestaurantPage page = new RestaurantPage(restaurant);
+                restaurant.setPage(page);
+            }
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void receiveMenu(Restaurant restaurant) {
+        try {
+            establishConnection();
+            ResultSet resultSet = statement
+                    .executeQuery("SELECT * FROM foods WHERE restaurant_id = " + restaurant.getID() + " ;");
+            while (resultSet.next()) {
+                Food food = new Food(resultSet.getString("food_name"), Double.parseDouble(resultSet.getString("price")),
+                Integer.parseInt(resultSet.getString("food_id")),restaurant);
+                restaurant.setMenu(food);
+                FoodPage foodPage = new FoodPage(food, restaurant);
+                food.setPage(foodPage);
+            }
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int receiveID(String column_name, String table_name) {
+        try {
+            establishConnection();
+            ResultSet resultSet = statement
+                    .executeQuery("SELECT MAX(" + column_name + ") AS maximum FROM " + table_name + ";");
+            int max = 0;
+            if (resultSet.next())
+                max = resultSet.getInt("maximum");
+            System.out.println(max);
+            terminateConnection();
+            return max;
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static void addSQLrow(String dataType, Object object) {
+        switch (dataType) {
+            case "restaurant":
+                Restaurant restaurant = (Restaurant) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO restaurants(restaurant_name,owner_id,location) VALUES(\""
+                            + restaurant.getName()
+                            + "\",\"" + restaurant.getOwner().user_id + "\"," + restaurant.getLoc().getNum() + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "food":
+                Food food = (Food) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO foods(food_name,price,restaurant_id) VALUES(\"" + food.getName()+ "\",\"" + food.getPrice() + "\"," + food.getRestaurant().getID() + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void updateSQL(String table_name,String column_name,String condition,String updatedData){
+        try {
+            establishConnection();
+            String dbOp = "UPDATE "+table_name+" SET "+column_name+" = "+updatedData+" WHERE "+condition+";";
+            statement.executeQuery(dbOp);
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteSQLRow(String table_name,String condition){
+        try {
+            establishConnection();
+            String dbOp = "DELETE FROM "+table_name+" WHERE "+condition+";";
+            statement.executeQuery(dbOp);
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }   
     }
 
 }

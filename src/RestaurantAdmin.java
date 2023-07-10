@@ -9,9 +9,14 @@ public class RestaurantAdmin extends User {
     public Restaurant currRestaurant = null;
     private RestaurantAdminPage restAdminPage;
 
-    RestaurantAdmin(String name,String password){
+    RestaurantAdmin(String name,String password,int id){
         this.username = name;
         this.password = password;
+        this.user_id = id;
+    }
+
+    public void addRestaurant(Restaurant restaurant){
+        this.restaurants.add(restaurant);
     }
 
     public void setPage(RestaurantAdminPage restAdminPage){

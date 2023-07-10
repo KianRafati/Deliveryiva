@@ -49,12 +49,14 @@ public class FoodPage extends Page {
                     if (User.currUser instanceof RestaurantAdmin) {
                         String[] temp0 = input.split("\\s");
                         this.food.setName(temp0[2]);
+                        User.updateSQL("foods", "food_name", "food_id = "+this.food.getID(), temp0[2]);
                     }
                     break;
                 case 2: // edit price
                     if (User.currUser instanceof RestaurantAdmin) {
                         String[] temp1 = input.split("\\s");
                         this.food.setPrice(Double.parseDouble(temp1[2]));
+                        User.updateSQL("foods", "price", "food_id = "+this.food.getID(), temp1[2]);
                     }
                     break;
                 case 3:// add discount

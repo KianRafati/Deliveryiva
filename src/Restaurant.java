@@ -23,10 +23,28 @@ public class Restaurant {
     private ArrayList<Rating> ratings = new ArrayList<>();
 
     // ==============================================================================
-    public Restaurant(String name, Node location, int ID) {
+    public Restaurant(String name, Node location, int ID, int Owner_id) {
         this.name = name;
         this.location = location;
         this.ID = ID;
+        for (User user : User.users) {
+            if(user.user_id == Owner_id){
+                this.owner = (RestaurantAdmin)user;
+                break;
+            }
+        }
+    }
+
+    public RestaurantAdmin getOwner(){
+        return this.owner;
+    }
+
+    public void setMenu(Food food){
+        this.menu.add(food);
+    }
+
+    public void setOwner(RestaurantAdmin owner){
+        this.owner = owner;
     }
 
     public String getFoodType() {
@@ -83,6 +101,7 @@ public class Restaurant {
                 System.out.println("6. Grocery");
                 return false;
         }
+        User.updateSQL("restaurants", "food_type", "restaurant_name", this.foodType);
         System.out.println(this.name + "'s food type changed to " + ft);
         return true;
     }
@@ -111,6 +130,7 @@ public class Restaurant {
         this.location = Node.nodes.get(nodeNum);
         this.location.setNodeHolder(this);
         Node.occupiedNodes.add(this.location);
+        User.updateSQL("restaurants", "location", "restaurant_name", Integer.toString(this.location.getNum()));
         System.out.println("Location changed successfully!");
 
         return true;
@@ -128,15 +148,16 @@ public class Restaurant {
             }
         }
 
-        if (price < DeliveryivaSettings.DeliveryivaMin) {
+        if (price < DeliveryivaSettings.getInstance().DELIVERYIVA_MIN_FOOD_PRICE) {
             System.out.println("price cannot be set to this value!");
             return false;
         }
 
-        Food food = new Food(foodName, price, this.menu.size() + 1);
+        Food food = new Food(foodName, price, User.receiveID("food_id", "foods"),this);
         FoodPage page = new FoodPage(food, this);
         food.setPage(page);
         this.menu.add(food);
+        User.addSQLrow("food", food);
         System.out.println("food successfully added to restaurant's menu");
         return true;
     }
@@ -158,9 +179,22 @@ public class Restaurant {
             if (food.getName().equals(foodName)) {
                 this.menu.remove(food);
                 food = null;
+                User.deleteSQLRow("foods","food_id = "+food.getID()+"");
                 return;
             }
         }
+    }
+
+    public double calculateRating(){
+        if(this.ratings.isEmpty())
+            return 0;
+
+        double rate = 0;
+        for (Rating rating : this.ratings) 
+            rate += rating.amount;
+        rate = rate/this.ratings.size();
+
+        return rate;
     }
 
     public boolean actFood(String foodName) {
@@ -178,7 +212,7 @@ public class Restaurant {
     public boolean deactFood(String foodName) {
         for (Food food : this.menu)
             if (food.getName().equals(foodName)) {
-                food.activeFood();
+                food.deactiveFood();
                 System.out.println(food.getName() + " has been deactivated and is out of order!");
                 return true;
             }

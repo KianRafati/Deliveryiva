@@ -13,7 +13,8 @@ public class DeliveryivaSettings {
         return instance;
     }
 
-    public static double DeliveryivaMin = 1000;
-    public ArrayList<Restaurant> restaurants = new ArrayList<>();
+    public final double DELIVERYIVA_MIN_FOOD_PRICE = 1.00;
+    public final int DELIVERYIVA_LOCAL_RANGE = 50;
+
 
 }

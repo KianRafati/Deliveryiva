@@ -48,7 +48,8 @@ public class CustomerPage extends Page {
                     break;
                 case 1: // select rest
                     String[] temp1 = input.split("\\s");
-                    customer.SelectRest(Integer.parseInt(temp1[2]));
+                    if(!customer.SelectRest(Integer.parseInt(temp1[2])))
+                        return;
                     break;
                 case 2://order his
                     customer.DisplayOrderHis();

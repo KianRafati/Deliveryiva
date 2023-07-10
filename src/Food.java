@@ -6,25 +6,36 @@ import lib.Page.Page;
 import lib.Page.FoodPage.FoodPage;
 
 public class Food {
+    //======================================================================
+
+    private int ID;
     private String name;
     private double price;
+    private Restaurant restaurant;
+    private Rating totRating;
+    private String FoodDescription;
+    public ArrayList<Comment> comments = new ArrayList<>();
+
+    //======================================================================
+
     private double discountAmount;
     private double discountTimeStamp;
-    private int ID;
     private boolean active;
     private FoodPage page;
-    private Rating totRating;
     private ArrayList<Rating> Ratings = new ArrayList<>();
     private boolean isAvailable;
     private boolean hasDiscount;
-    public ArrayList<Comment> comments = new ArrayList<>();
-    private String FoodDescription;
 
 
-    public Food(String foodName, double price,int ID) {
+    public Food(String foodName, double price,int ID, Restaurant restaurant) {
         this.name = foodName;
         this.price = price;
         this.ID = ID;
+        this.restaurant = restaurant;
+    }
+
+    public Restaurant getRestaurant(){
+        return this.restaurant;
     }
 
     public String getName() {
@@ -64,10 +75,12 @@ public class Food {
 
     public void activeFood(){
         this.active = true;
+        User.updateSQL("foods", "food_status","food_id = "+this.ID, "1");
     }
 
     public void deactiveFood(){
         this.active = false;
+        User.updateSQL("foods", "food_status","food_id = "+this.ID, "0");
     }
 
     public Page getPage() {
@@ -112,7 +125,7 @@ public class Food {
         return true;
     }
 
-    private double calculateRating(){
+    public double calculateRating(){
         if(this.Ratings.isEmpty())
             return 0;
 
@@ -199,4 +212,5 @@ public class Food {
         System.out.println("you have not rated this food!");
         return false;
     }
+
 }
