@@ -158,14 +158,14 @@ public abstract class User {
     }
 
     public boolean ChangePass(String oldPass, String newPass) {
-        if(!oldPass.matches(this.password)){
+        if (!oldPass.matches(this.password)) {
             System.out.println("Password incorrect");
             System.out.println("please re-enter your request");
             return false;
         }
 
         this.password = newPass;
-        updateSQL("users", "password", "user_id = "+this.user_id, newPass);
+        updateSQL("users", "password", "user_id = " + this.user_id, newPass);
         System.out.println("password changed successfully");
         return true;
     }
@@ -224,6 +224,24 @@ public abstract class User {
         }
     }
 
+    public static void receiveComments(Food food) {
+        try {
+            establishConnection();
+            ResultSet resultSet = statement
+                    .executeQuery("SELECT * FROM comments WHERE food_id = "+food.getID()+";");
+            while (resultSet.next()) {
+                User user = getUser(Integer.parseInt(resultSet.getString("commenter_id")));
+                Comment comment = new Comment(Integer.parseInt(resultSet.getString("comment_id")), user, resultSet.getString("content"), food);
+                food.comments.add(comment);
+                if(resultSet.getString("to_comment_id") != null)
+                    comment.setTo(Integer.parseInt(resultSet.getString("to_comment_id")),food);
+            }
+            terminateConnection();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void receiveMenu(Restaurant restaurant) {
         try {
             establishConnection();
@@ -231,7 +249,7 @@ public abstract class User {
                     .executeQuery("SELECT * FROM foods WHERE restaurant_id = " + restaurant.getID() + " ;");
             while (resultSet.next()) {
                 Food food = new Food(resultSet.getString("food_name"), Double.parseDouble(resultSet.getString("price")),
-                Integer.parseInt(resultSet.getString("food_id")),restaurant);
+                        Integer.parseInt(resultSet.getString("food_id")), restaurant);
                 restaurant.setMenu(food);
                 FoodPage foodPage = new FoodPage(food, restaurant);
                 food.setPage(foodPage);
@@ -279,7 +297,60 @@ public abstract class User {
                 Food food = (Food) object;
                 try {
                     establishConnection();
-                    String dbOp = "INSERT INTO foods(food_name,price,restaurant_id) VALUES(\"" + food.getName()+ "\",\"" + food.getPrice() + "\"," + food.getRestaurant().getID() + ");";
+                    String dbOp = "INSERT INTO foods(food_name,price,restaurant_id) VALUES(\"" + food.getName()
+                            + "\",\"" + food.getPrice() + "\"," + food.getRestaurant().getID() + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "comment01":
+                Comment comment01 = (Comment) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO comments(commenter_id,content,food_id) VALUES(\"" + comment01.ID
+                            + "\",\"" + comment01.content + "\"," + comment01.food.getID() + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "comment02":
+                Comment comment02 = (Comment) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO comments(commenter_id,content,restaurant_id) VALUES(\"" + comment02.ID
+                            + "\",\"" + comment02.content + "\"," + comment02.restaurant.getID() + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "comment11":
+                Comment comment11 = (Comment) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO comments(commenter_id,content,food_id,to_comment_id) VALUES(\""
+                            + comment11.ID
+                            + "\",\"" + comment11.content + "\"," + comment11.food.getID() + "\","
+                            + comment11.toComment.ID + ");";
+                    statement.execute(dbOp);
+                    terminateConnection();
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "comment12":
+                Comment comment12 = (Comment) object;
+                try {
+                    establishConnection();
+                    String dbOp = "INSERT INTO comments(commenter_id,content,restaurant_id,to_comment_id) VALUES(\""
+                            + comment12.ID
+                            + "\",\"" + comment12.content + "\"," + comment12.restaurant.getID() + "\","
+                            + comment12.toComment.ID + ");";
                     statement.execute(dbOp);
                     terminateConnection();
                 } catch (ClassNotFoundException | SQLException e) {
@@ -291,10 +362,11 @@ public abstract class User {
         }
     }
 
-    public static void updateSQL(String table_name,String column_name,String condition,String updatedData){
+    public static void updateSQL(String table_name, String column_name, String condition, String updatedData) {
         try {
             establishConnection();
-            String dbOp = "UPDATE "+table_name+" SET "+column_name+" = "+updatedData+" WHERE "+condition+";";
+            String dbOp = "UPDATE " + table_name + " SET " + column_name + " = " + updatedData + " WHERE " + condition
+                    + ";";
             statement.executeQuery(dbOp);
             terminateConnection();
         } catch (ClassNotFoundException | SQLException e) {
@@ -302,15 +374,17 @@ public abstract class User {
         }
     }
 
-    public static void deleteSQLRow(String table_name,String condition){
+    public static void deleteSQLRow(String table_name, String condition) {
         try {
             establishConnection();
-            String dbOp = "DELETE FROM "+table_name+" WHERE "+condition+";";
+            String dbOp = "DELETE FROM " + table_name + " WHERE " + condition + ";";
             statement.executeQuery(dbOp);
             terminateConnection();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-        }   
+        }
     }
+
+
 
 }

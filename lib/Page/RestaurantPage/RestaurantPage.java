@@ -20,6 +20,7 @@ public class RestaurantPage extends Page {
     @Override
     public void run(String input) {
         String delfood = null;
+        this.previousPage = this.restaurant.getOwner().getPage();
 
         if (input.equals("back")) {
             PageHandler.changePage(this.previousPage);

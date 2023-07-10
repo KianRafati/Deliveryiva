@@ -240,6 +240,7 @@ public class Restaurant {
             if (food.getName().equals(foodName)) {
                 food.getPage().previousPage = PageHandler.currPage;
                 PageHandler.changePage(food.getPage());
+                User.receiveComments(food);
                 return true;
             }
         System.out.println("the food " + foodName + " is not in the menu!");
@@ -359,7 +360,7 @@ public class Restaurant {
     }
 
     public void setResond(int commentID,User user, String input) {
-        this.comments.get(commentID-1).setReply(user, input);
+        this.comments.get(commentID-1).setReply(user,this, input);
         System.out.println("reply set successfully");
     }
 

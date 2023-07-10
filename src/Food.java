@@ -120,7 +120,7 @@ public class Food {
             return false;
         }
 
-        this.comments.get(CommentID - 1).setReply(commenter, reply);
+        this.comments.get(CommentID - 1).setReply(commenter, this,reply);
         System.out.println("reply set successfully!");
         return true;
     }
@@ -138,13 +138,22 @@ public class Food {
     }
 
     public void setComment(User user,String content) {
-        Comment comment = new Comment(this.comments.size(), user, content, this);
+        Comment comment = new Comment(User.receiveID("comment_id","comments"), user, content, this);
         this.comments.add(comment);
+        User.addSQLrow("comment01", comment);
+
         System.out.println("comment set successfully");
         System.out.println("thank you for your feedback");
     }
 
     public boolean editComment(int commentID,User user, String content){
+        
+        if (commentID > this.comments.size() || commentID < 0) {
+            System.out.println("comment does not exist");
+            System.out.println("please re-enter your request");
+            return false;
+        }
+        
         Comment comment = this.comments.get(commentID-1);
         if(!comment.commenter.equals(user)){
             System.out.println("This is not your comment!");
@@ -153,12 +162,13 @@ public class Food {
         }
 
         comment.setContent(content);
+        User.updateSQL("comments", "content", "comment_id = "+commentID, content);
         System.out.println("Comment updated successfully");
         return true;
     }
 
     public void setResond(int commentID,User user, String input) {
-        this.comments.get(commentID-1).setReply(user, input);
+        this.comments.get(commentID-1).setReply(user, this,input);
         System.out.println("reply set successfully");
     }
 
