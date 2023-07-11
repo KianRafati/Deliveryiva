@@ -18,8 +18,8 @@ public class PageHandler {
     public static Scanner scanner = new Scanner(System.in);
 
     private static void init() {
-        User.receiveDB();
-        readFile();
+//        User.receiveDB();
+        //readFile();
 
         if (User.currUser == null)
             currPage = StartPage0.getInstance();
@@ -76,41 +76,41 @@ public class PageHandler {
     }
 
     private static void terminate() {
-        writeFile();
+        //writeFile();
         run = false;
         scanner.close();
     }
 
-    private static void writeFile() {
-        try {
-            File file = new File("data.txt");
-            FileWriter fWriter = new FileWriter(file);
+    //private static void writeFile() {
+      //  try {
+        //    File file = new File("data.txt");
+          //  FileWriter fWriter = new FileWriter(file);
 
-            if (User.currUser == null)
-                fWriter.append("null");
-            else 
-                fWriter.append(User.currUser.username);
-            fWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            //if (User.currUser == null)
+              //  fWriter.append("null");
+            //else
+              //  fWriter.append(User.currUser.username);
+            //fWriter.close();
+        //} catch (IOException e) {
+          //  e.printStackTrace();
+        //}
+    //}
 
-    private static void readFile() {
-        try {
-            File file = new File("data.txt");
-            FileReader fReader = new FileReader(file);
+    //private static void readFile() {
+        //try {
+            //File file = new File("data.txt");
+            //FileReader fReader = new FileReader(file);
 
-            BufferedReader bufferedReader = new BufferedReader(fReader);
-            String input = bufferedReader.readLine();
-            for (User user : User.users) 
-                if(user.username.equals(input)){
-                    User.currUser = user;
-                    break;
-                }
-            fReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            //BufferedReader bufferedReader = new BufferedReader(fReader);
+            //String input = bufferedReader.readLine();
+            //for (User user : User.users)
+              //  if(user.username.equals(input)){
+                //    User.currUser = user;
+                  //  break;
+                //}
+            //fReader.close();
+        //} catch (Exception e) {
+          //  e.printStackTrace();
+        //}
+    //}
 }

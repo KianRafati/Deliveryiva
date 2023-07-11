@@ -105,6 +105,7 @@ public class Authintication_Page extends Page {
                     break;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error! please retry your request");
         }
     }

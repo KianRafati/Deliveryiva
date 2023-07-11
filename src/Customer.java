@@ -120,4 +120,7 @@ public class Customer extends User {
         this.page = page;
     }
 
+    public Node getLoc() {
+        return this.location;
+    }
 }

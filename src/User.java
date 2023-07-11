@@ -32,17 +32,17 @@ public abstract class User {
     }
 
     public static void establishConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection(url, SQLuser, SQLpassword);
-        statement = connection.createStatement();
+        //Class.forName("com.mysql.cj.jdbc.Driver");
+        //Connection connection = DriverManager.getConnection(url, SQLuser, SQLpassword);
+        //statement = connection.createStatement();
     }
 
     public static void terminateConnection() throws SQLException {
-        statement.close();
+        //statement.close();
     }
 
     static void receiveDB() {
-        try {
+       try {
             establishConnection();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users;");
             while (resultSet.next()) {
@@ -110,7 +110,7 @@ public abstract class User {
                 User.users.add(user2);
                 String DBop2 = "INSERT INTO users(username,user_password,user_type) VALUES(\"" + user2.username
                         + "\",\"" + user2.password + "\"," + 2 + ");";
-                statement.execute(DBop2);
+                //statement.execute(DBop2);
                 currUser = user2;
                 break;
             case 3:
