@@ -8,7 +8,7 @@ import lib.Page.RestaurantPage.RestaurantPage;
 
 public class Restaurant {
     // ==============================================================================
-    
+
     private String name;
     private int ID;
     private Node location;
@@ -18,13 +18,33 @@ public class Restaurant {
     private ArrayList<Order> OrderHistory = new ArrayList<>();
     private ArrayList<Order> OpenOrders = new ArrayList<>();
     private boolean order = false;
-    private RestaurantAdmin owner = (RestaurantAdmin) User.currUser;
+    private RestaurantAdmin owner;
+    private ArrayList<Comment> comments = new ArrayList<>();
+    private ArrayList<Rating> ratings = new ArrayList<>();
 
     // ==============================================================================
-    public Restaurant(String name, Node location, int ID) {
+    public Restaurant(String name, Node location, int ID, int Owner_id) {
         this.name = name;
         this.location = location;
         this.ID = ID;
+        for (User user : User.users) {
+            if(user.user_id == Owner_id){
+                this.owner = (RestaurantAdmin)user;
+                break;
+            }
+        }
+    }
+
+    public RestaurantAdmin getOwner(){
+        return this.owner;
+    }
+
+    public void setMenu(Food food){
+        this.menu.add(food);
+    }
+
+    public void setOwner(RestaurantAdmin owner){
+        this.owner = owner;
     }
 
     public String getFoodType() {
@@ -47,6 +67,10 @@ public class Restaurant {
         this.page = page;
     }
 
+    public RestaurantPage getPage(){
+        return this.page;
+    }
+    
     public boolean changeFT(String ft) {
         switch (ft) {
             case "FastFood":
@@ -77,6 +101,7 @@ public class Restaurant {
                 System.out.println("6. Grocery");
                 return false;
         }
+        User.updateSQL("restaurants", "food_type", "restaurant_name", this.foodType);
         System.out.println(this.name + "'s food type changed to " + ft);
         return true;
     }
@@ -105,6 +130,7 @@ public class Restaurant {
         this.location = Node.nodes.get(nodeNum);
         this.location.setNodeHolder(this);
         Node.occupiedNodes.add(this.location);
+        User.updateSQL("restaurants", "location", "restaurant_name", Integer.toString(this.location.getNum()));
         System.out.println("Location changed successfully!");
 
         return true;
@@ -122,15 +148,16 @@ public class Restaurant {
             }
         }
 
-        if (price < DeliveryivaSettings.DeliveryivaMin) {
+        if (price < DeliveryivaSettings.getInstance().DELIVERYIVA_MIN_FOOD_PRICE) {
             System.out.println("price cannot be set to this value!");
             return false;
         }
 
-        Food food = new Food(foodName , price, this.menu.size() + 1);
-        FoodPage page = new FoodPage(food,this);
+        Food food = new Food(foodName, price, User.receiveID("food_id", "foods"),this);
+        FoodPage page = new FoodPage(food, this);
         food.setPage(page);
         this.menu.add(food);
+        User.addSQLrow("food", food);
         System.out.println("food successfully added to restaurant's menu");
         return true;
     }
@@ -152,9 +179,22 @@ public class Restaurant {
             if (food.getName().equals(foodName)) {
                 this.menu.remove(food);
                 food = null;
+                User.deleteSQLRow("foods","food_id = "+food.getID()+"");
                 return;
             }
         }
+    }
+
+    public double calculateRating(){
+        if(this.ratings.isEmpty())
+            return 0;
+
+        double rate = 0;
+        for (Rating rating : this.ratings) 
+            rate += rating.amount;
+        rate = rate/this.ratings.size();
+
+        return rate;
     }
 
     public boolean actFood(String foodName) {
@@ -172,7 +212,7 @@ public class Restaurant {
     public boolean deactFood(String foodName) {
         for (Food food : this.menu)
             if (food.getName().equals(foodName)) {
-                food.activeFood();
+                food.deactiveFood();
                 System.out.println(food.getName() + " has been deactivated and is out of order!");
                 return true;
             }
@@ -200,6 +240,7 @@ public class Restaurant {
             if (food.getName().equals(foodName)) {
                 food.getPage().previousPage = PageHandler.currPage;
                 PageHandler.changePage(food.getPage());
+                User.receiveComments(food);
                 return true;
             }
         System.out.println("the food " + foodName + " is not in the menu!");
@@ -208,31 +249,31 @@ public class Restaurant {
     }
 
     public void showOrderHis() {
-        System.out.println(this.name+"'s Order History:");
-        if(this.OrderHistory.isEmpty())
+        System.out.println(this.name + "'s Order History:");
+        if (this.OrderHistory.isEmpty())
             System.out.println("EMPTY");
-        else{
+        else {
             for (Order order : OrderHistory) {
                 System.out.println("===========================================");
-                System.out.println("Order ID: "+order.getID());
-                System.out.println("to Customer "+order.getCustomer().username);
-                System.out.println("Contents:");
-                order.showContents();
+                System.out.println("Order ID: " + order.getID());
+                System.out.println("to Customer " + order.getCustomer().username);
+                System.out.println("cart:");
+                order.showcart();
             }
         }
     }
 
     public void showOpenOrders() {
-        System.out.println(this.name+"'s Open Orders:");
-        if(this.OrderHistory.isEmpty())
+        System.out.println(this.name + "'s Open Orders:");
+        if (this.OrderHistory.isEmpty())
             System.out.println("EMPTY");
-        else{
+        else {
             for (Order order : OpenOrders) {
                 System.out.println("===========================================");
-                System.out.println("Order ID: "+order.getID());
-                System.out.println("to Customer "+order.getCustomer().username);
-                System.out.println("Contents:");
-                order.showContents();
+                System.out.println("Order ID: " + order.getID());
+                System.out.println("to Customer " + order.getCustomer().username);
+                System.out.println("cart:");
+                order.showcart();
             }
         }
     }
@@ -240,26 +281,125 @@ public class Restaurant {
     public boolean editOrder(int ID, String status) {
 
         int flag = 0;
-        for (String stat : Order.statuses) 
-            if(stat.equals(status))
+        for (String stat : Order.statuses)
+            if (stat.equals(status))
                 flag++;
-        
-        if(flag == 0){
+
+        if (flag == 0) {
             System.out.println("Invalid Status");
             System.out.println("Please re-enter you request");
             return false;
         }
 
-        for (Order order : OpenOrders) 
-            if(order.getID() == ID){
+        for (Order order : OpenOrders)
+            if (order.getID() == ID) {
                 order.setStatus(status);
-                System.out.println("Order with ID "+order.getID()+"'s status edited successfully");
+                System.out.println("Order with ID " + order.getID() + "'s status edited successfully");
                 return true;
             }
-        
-        System.out.println("Order with ID "+ID+" cannot be found");
+
+        System.out.println("Order with ID " + ID + " cannot be found");
         System.out.println("Please re-enter you request");
         return false;
     }
 
+    public ArrayList<Food> getMenu() {
+        return this.menu;
+    }
+
+    public ArrayList<Rating> getRatings() {
+        return this.ratings;
+    }
+
+    public void DisplayRatings() {
+        System.out.println(this.name + "'s ratings:");
+
+        if (!this.ratings.isEmpty())
+            for (Rating rate : this.ratings)
+                System.out.println(rate.ID + ". " + rate.amount);
+        else
+            System.out.println("EMPTY");
+
+    }
+
+    public ArrayList<Comment> getComments(){
+        return this.comments;
+    }
+
+    public void setComment(User user,String content) {
+        Comment comment = new Comment(this.comments.size(), user, content, this);
+        this.comments.add(comment);
+        System.out.println("comment set successfully");
+        System.out.println("thank you for your feedback");
+    }
+
+    public void DisplayComments(){
+        if(this.comments.isEmpty()){
+            System.out.println(this.name+" has no comments!");
+            return;
+        }
+
+        System.out.println(this.name+"'s comments:");
+        for (Comment comment : this.comments) {
+            comment.displayComment();
+        }
+
+    }
+
+    public boolean editComment(int commentID, User user, String content) {
+        Comment comment = this.comments.get(commentID-1);
+        if(!comment.commenter.equals(user)){
+            System.out.println("This is not your comment!");
+            System.out.println("please re-enter your request");
+            return false;
+        }
+
+        comment.setContent(content);
+        System.out.println("Comment updated successfully");
+        return true;
+    }
+
+    public void setResond(int commentID,User user, String input) {
+        this.comments.get(commentID-1).setReply(user,this, input);
+        System.out.println("reply set successfully");
+    }
+
+    public boolean editResond(int commentID,int replyID, User user, String input) {
+        Comment reply = this.comments.get(commentID-1).replies.get(replyID-1);
+        if(!reply.commenter.equals(user)){
+            System.out.println("This is not your comment!");
+            System.out.println("please re-enter your request");
+            return false;
+        }
+
+        reply.setContent(input);
+        System.out.println("comment edited successfully");
+        return true;
+
+    }
+
+    public void setRate(Customer customer,int amount){
+        for (Rating rating : this.ratings) {
+            if(customer.equals(rating.customer)){
+                System.out.println("you can not use this command you've rated this restaurant");
+                return;
+            }
+        }
+        Rating rating = new Rating(this.ratings.size(), amount, customer, this);
+        this.ratings.add(rating);
+        System.out.println("Reply set successfully");
+    }
+
+    public boolean editRating(User user,int newAmount){
+        for (Rating rating : this.ratings) {
+            if(rating.customer.equals(user)){
+                rating.amount = newAmount;
+                System.out.println("rating edited successfully");
+                return true;
+            }
+        }
+
+        System.out.println("you have not rated this restaurant!");
+        return false;
+    }
 }

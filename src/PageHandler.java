@@ -18,7 +18,6 @@ public class PageHandler {
     public static Scanner scanner = new Scanner(System.in);
 
     private static void init() {
-
         User.receiveDB();
         readFile();
 
@@ -28,11 +27,13 @@ public class PageHandler {
             if (User.currUser instanceof RestaurantAdmin){
                 RestaurantAdminPage rstPage = new RestaurantAdminPage((RestaurantAdmin) User.currUser);
                 ((RestaurantAdmin) User.currUser).setPage(rstPage);
+                User.receiveRests(User.currUser.user_id);
                 currPage = ((RestaurantAdmin) User.currUser).getPage();
             }
             else if (User.currUser instanceof Customer){
                 CustomerPage customerPage = new CustomerPage((Customer) User.currUser);
                 ((Customer) User.currUser).setPage(customerPage);
+                User.receiveLocalRests(((Customer) User.currUser).location.getNum());
                 currPage = ((Customer) User.currUser).getPage();
             }
             else if (User.currUser instanceof Delivery){

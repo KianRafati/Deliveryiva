@@ -6,9 +6,10 @@ import lib.Page.DeliveryPage.DeliveryPage;
 public class Delivery extends User {
     DeliveryPage deliveryPage;
     
-    Delivery(String name,String password){
+    Delivery(String name,String password, int id){
         this.username = name;
         this.password = password;
+        this.user_id = id;
     }
 
     public void setPage(DeliveryPage deliveryPage) {
