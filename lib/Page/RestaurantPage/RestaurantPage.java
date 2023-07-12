@@ -12,6 +12,7 @@ public class RestaurantPage extends Page {
     private int inputCount = 0;
     private int commentID = 0;
     private int respondID = 0;
+    String delfood = null;
 
     public RestaurantPage(Restaurant restaurant) {
         this.restaurant = restaurant;
@@ -19,7 +20,6 @@ public class RestaurantPage extends Page {
 
     @Override
     public void run(String input) {
-        String delfood = null;
         this.previousPage = this.restaurant.getOwner().getPage();
 
         if (input.equals("back")) {

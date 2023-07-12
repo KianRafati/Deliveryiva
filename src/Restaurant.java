@@ -178,11 +178,12 @@ public class Restaurant {
         for (Food food : this.menu) {
             if (food.getName().equals(foodName)) {
                 this.menu.remove(food);
-                food = null;
                 User.deleteSQLRow("foods","food_id = "+food.getID()+"");
+                food = null;
                 return;
             }
         }
+        System.out.println(foodName);
     }
 
     public double calculateRating(){

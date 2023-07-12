@@ -94,8 +94,7 @@ public class RestaurantAdminPage extends Page {
     }
 
     private void AreYouSure() {
-        System.out.println(
-                "Are you sure you want to delete this restaurant? (all orders and profit will be deleted) Y/N");
+        System.out.println("Are you sure you want to delete this restaurant? (all orders and profit will be deleted) Y/N");
         inputCount = 2;
     }
 
