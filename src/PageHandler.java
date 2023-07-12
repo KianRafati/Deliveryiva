@@ -12,30 +12,39 @@ import lib.Page.CustomerPage.CustomerPage;
 import lib.Page.DeliveryPage.DeliveryPage;
 import lib.Page.RestaurantAdminPage.RestaurantAdminPage;
 
+import javafx.application.Platform;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 public class PageHandler {
     public static Page currPage;
     private static boolean run = true;
     public static Scanner scanner = new Scanner(System.in);
+    private static Stage primaryStage;
+
+    public static void setPrimaryStage(Stage stage) {
+        primaryStage = stage;
+    }
 
     private static void init() {
-
         User.receiveDB();
         readFile();
 
         if (User.currUser == null)
-            currPage = StartPage0.getInstance();
+            currPage = StartPage.getInstance();
         else {
-            if (User.currUser instanceof RestaurantAdmin){
+            if (User.currUser instanceof RestaurantAdmin) {
                 RestaurantAdminPage rstPage = new RestaurantAdminPage((RestaurantAdmin) User.currUser);
                 ((RestaurantAdmin) User.currUser).setPage(rstPage);
+                User.receiveRests(User.currUser.user_id);
                 currPage = ((RestaurantAdmin) User.currUser).getPage();
-            }
-            else if (User.currUser instanceof Customer){
+            } else if (User.currUser instanceof Customer) {
                 CustomerPage customerPage = new CustomerPage((Customer) User.currUser);
                 ((Customer) User.currUser).setPage(customerPage);
+                User.receiveLocalRests(((Customer) User.currUser).location.getNum());
                 currPage = ((Customer) User.currUser).getPage();
-            }
-            else if (User.currUser instanceof Delivery){
+            } else if (User.currUser instanceof Delivery) {
                 DeliveryPage deliveryPage = new DeliveryPage((Delivery) User.currUser);
                 ((Delivery) User.currUser).setPage(deliveryPage);
                 currPage = ((Delivery) User.currUser).getPage();
@@ -45,6 +54,19 @@ public class PageHandler {
 
     public static void changePage(Page newPage) {
         currPage = newPage;
+        // primaryStage.hide();
+
+        // // Get the root element of the new page's scene
+        // Parent root = newPage.getRoot();
+
+        // // Create a new scene with the updated root element
+        // Scene scene = new Scene(root);
+
+        // // Set the new scene on the primary stage
+        // primaryStage.setScene(scene);
+
+        // // Show the primary stage with the new scene
+        // primaryStage.show();
     }
 
     public static void showPage() {
@@ -87,7 +109,7 @@ public class PageHandler {
 
             if (User.currUser == null)
                 fWriter.append("null");
-            else 
+            else
                 fWriter.append(User.currUser.username);
             fWriter.close();
         } catch (IOException e) {
@@ -102,8 +124,8 @@ public class PageHandler {
 
             BufferedReader bufferedReader = new BufferedReader(fReader);
             String input = bufferedReader.readLine();
-            for (User user : User.users) 
-                if(user.username.equals(input)){
+            for (User user : User.users)
+                if (user.username.equals(input)) {
                     User.currUser = user;
                     break;
                 }

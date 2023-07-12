@@ -1,5 +1,6 @@
 package lib.Page.Authintication_Page;
 
+import javafx.scene.Parent;
 import lib.Page.Page;
 import lib.Page.CustomerPage.CustomerPage;
 import lib.Page.DeliveryPage.DeliveryPage;
@@ -9,6 +10,7 @@ import src.*;
 public class Authintication_Page extends Page {
 
     private static Authintication_Page instance = null;
+    AuthinticationPageGUIHandler guiHandler = new AuthinticationPageGUIHandler();
 
     private Authintication_Page() {
     }
@@ -23,6 +25,8 @@ public class Authintication_Page extends Page {
     public void run(String input) {
 
         System.out.println("***********Authentication page***********");
+
+        // guiHandler.launchGUI();
 
         int counter = 0;
         for (Authintication_Page_Commmands command : Authintication_Page_Commmands.values()) {
@@ -74,6 +78,7 @@ public class Authintication_Page extends Page {
                     if (User.LoginUser(temp3[3], temp3[4])) {
                         System.out.println("press Enter");
                         RestaurantAdminPage RestAdminPage = new RestaurantAdminPage((RestaurantAdmin) User.currUser);
+                        User.receiveRests(((RestaurantAdmin) User.currUser).user_id);
                         RestAdminPage.previousPage = PageHandler.currPage;
                         PageHandler.changePage(RestAdminPage);
                         RestAdminPage.getUser().setPage(RestAdminPage);
@@ -84,6 +89,7 @@ public class Authintication_Page extends Page {
                     if (User.LoginUser(temp4[2], temp4[3])) {
                         System.out.println("press Enter");
                         CustomerPage customerPage = new CustomerPage((Customer) User.currUser);
+                        User.receiveLocalRests(((Customer) User.currUser).location.getNum());
                         customerPage.previousPage = PageHandler.currPage;
                         PageHandler.changePage(customerPage);
                         customerPage.getUser().setPage(customerPage);
@@ -106,5 +112,8 @@ public class Authintication_Page extends Page {
             System.out.println("Error! please retry your request");
         }
     }
+
+
+
 
 }

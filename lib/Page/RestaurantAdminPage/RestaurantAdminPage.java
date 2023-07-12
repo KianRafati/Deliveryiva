@@ -1,5 +1,8 @@
 package lib.Page.RestaurantAdminPage;
 
+import java.beans.Statement;
+import java.sql.SQLException;
+
 import lib.Page.Page;
 import lib.Page.RestaurantPage.RestaurantPage;
 import src.Node;
@@ -12,20 +15,20 @@ public class RestaurantAdminPage extends Page {
     int id;
     private int inputCount = 0;
     private RestaurantAdmin restAdmin;
-    
-    public RestaurantAdminPage(RestaurantAdmin restAdmin){
+
+    public RestaurantAdminPage(RestaurantAdmin restAdmin) {
         this.restAdmin = restAdmin;
     }
 
     @Override
     public void run(String input) {
 
-        if(input.equals("back")){
+        if (input.equals("back")) {
             PageHandler.changePage(this.previousPage);
             return;
         }
 
-        System.out.println("***********Restaurant admin page***********");
+        System.out.println("***********" + this.restAdmin.username + "'s page***********");
 
         if (inputCount == 0) {
             int counter = 0;
@@ -78,18 +81,20 @@ public class RestaurantAdminPage extends Page {
         }
 
         Node location = new Node();
+        location.setNumber(nodeNum);
         Node.occupiedNodes.add(location);
-        Restaurant restaurant = new Restaurant(name, location, ((RestaurantAdmin) User.currUser).getRests().size() + 1);
+        Restaurant restaurant = new Restaurant(name, location, User.receiveID("restaurant_id", "restaurants"),
+                this.restAdmin.user_id);
         RestaurantPage page = new RestaurantPage(restaurant);
         restaurant.setPage(page);
         restaurant.page.previousPage = this;
         ((RestaurantAdmin) User.currUser).getRests().add(restaurant);
+        User.addSQLrow("restaurant",restaurant);
         System.out.println("Restaurant added successfully");
     }
 
     private void AreYouSure() {
-        System.out.println(
-                "Are you sure you want to delete this restaurant? (all orders and profit will be deleted) Y/N");
+        System.out.println("Are you sure you want to delete this restaurant? (all orders and profit will be deleted) Y/N");
         inputCount = 2;
     }
 
@@ -119,7 +124,9 @@ public class RestaurantAdminPage extends Page {
                 if (restName.equals(restaurant.getName())) {
                     ((RestaurantAdmin) User.currUser).currRestaurant = restaurant;
                     PageHandler.changePage(restaurant.page);
-                    System.out.println("Selected restaurant " + restaurant.getName() + " with ID " + restaurant.getID());
+                    User.receiveMenu(restaurant);
+                    System.out
+                            .println("Selected restaurant " + restaurant.getName() + " with ID " + restaurant.getID());
                     return;
                 }
         } else {
@@ -135,6 +142,7 @@ public class RestaurantAdminPage extends Page {
             if (restaurant.getID() == id) {
                 ((RestaurantAdmin) User.currUser).currRestaurant = restaurant;
                 PageHandler.changePage(restaurant.page);
+                User.receiveMenu(restaurant);
                 System.out.println("Selected restaurant " + restaurant.getName() + " with ID " + restaurant.getID());
                 return;
             }
@@ -162,7 +170,7 @@ public class RestaurantAdminPage extends Page {
         }
     }
 
-    public RestaurantAdmin getUser(){
+    public RestaurantAdmin getUser() {
         return this.restAdmin;
     }
 }
