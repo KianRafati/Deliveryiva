@@ -1,5 +1,6 @@
 package lib.Page.Authintication_Page;
 
+import javafx.scene.Parent;
 import lib.Page.Page;
 import lib.Page.CustomerPage.CustomerPage;
 import lib.Page.DeliveryPage.DeliveryPage;
@@ -9,6 +10,7 @@ import src.*;
 public class Authintication_Page extends Page {
 
     private static Authintication_Page instance = null;
+    AuthinticationPageGUIHandler guiHandler = new AuthinticationPageGUIHandler();
 
     private Authintication_Page() {
     }
@@ -23,6 +25,8 @@ public class Authintication_Page extends Page {
     public void run(String input) {
 
         System.out.println("***********Authentication page***********");
+
+        // guiHandler.launchGUI();
 
         int counter = 0;
         for (Authintication_Page_Commmands command : Authintication_Page_Commmands.values()) {
@@ -108,5 +112,8 @@ public class Authintication_Page extends Page {
             System.out.println("Error! please retry your request");
         }
     }
+
+
+
 
 }

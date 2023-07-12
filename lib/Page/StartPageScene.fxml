@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lib.Page.StartPageController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="132.0" layoutY="233.0" prefHeight="133.0" prefWidth="235.0" text="Welcome to Deliveryiva!" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="174.0" layoutY="300.0" prefHeight="84.0" prefWidth="151.0" text="press any button to start" />
+   </children>
+</AnchorPane>

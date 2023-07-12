@@ -378,7 +378,7 @@ public abstract class User {
         try {
             establishConnection();
             String dbOp = "DELETE FROM " + table_name + " WHERE " + condition + ";";
-            statement.executeQuery(dbOp);
+            statement.executeUpdate(dbOp);
             terminateConnection();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
