@@ -180,10 +180,23 @@ public class Restaurant {
                 this.menu.remove(food);
                 User.deleteSQLRow("foods","food_id = "+food.getID()+"");
                 food = null;
+                User.deleteSQLRow("foods","food_id = "+food.getID()+"");
                 return;
             }
         }
         System.out.println(foodName);
+    }
+
+    public double calculateRating(){
+        if(this.ratings.isEmpty())
+            return 0;
+
+        double rate = 0;
+        for (Rating rating : this.ratings) 
+            rate += rating.amount;
+        rate = rate/this.ratings.size();
+
+        return rate;
     }
 
     public double calculateRating(){
