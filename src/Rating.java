@@ -20,4 +20,8 @@ public class Rating {
         this.customer = customer;
         this.restaurant = restaurant;
     }
+
+    public int getAmount(){
+        return this.amount;
+    }
 }

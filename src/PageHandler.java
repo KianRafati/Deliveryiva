@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class PageHandler {
 
     public static Page currPage;
-    private static Stage primaryStage;
+    public static Stage primaryStage;
 
     public static void setPrimaryStage(Stage stage) {
         primaryStage = stage;
@@ -102,6 +102,7 @@ public class PageHandler {
 
     private static void terminate() {
         writeFile();
+        primaryStage.close();
     }
 
     private static void writeFile() {

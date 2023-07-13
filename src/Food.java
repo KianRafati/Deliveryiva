@@ -12,7 +12,7 @@ public class Food {
     private String name;
     private double price;
     private Restaurant restaurant;
-    private Rating totRating;
+    private int totRating;
     private String FoodDescription;
     public ArrayList<Comment> comments = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class Food {
         User.updateSQL("foods", "food_status","food_id = "+this.ID, "0");
     }
 
-    public Page getPage() {
+    public FoodPage getPage() {
         return this.page;
     }
 
@@ -97,7 +97,7 @@ public class Food {
             return;
         }
 
-        System.out.println(this.name+"'s rating:"+this.totRating.amount);
+        System.out.println(this.name+"'s rating:"+this.totRating);
     }
 
     public void DisplayComments(){
@@ -190,7 +190,7 @@ public class Food {
         return this.ID;
     }
 
-    public Rating getRating(){
+    public int getRating(){
         return this.totRating;
     }
 
@@ -221,6 +221,32 @@ public class Food {
 
         System.out.println("you have not rated this food!");
         return false;
+    }
+
+    public String getImagePath() {
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append("E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\FoodImages\\Food_"+this.ID+".png");
+        return pathBuilder.toString();
+    }
+
+    public String getDescription() {
+        return this.FoodDescription;
+    }
+
+    public void setDescription(String string) {
+        this.FoodDescription = string;
+    }
+
+    public void setRating(int amount) {
+        this.totRating = amount;
+    }
+
+    public boolean getStatus() {
+        return this.active;
+    }
+
+    public void setStatus(boolean status) {
+        this.active = status;
     }
 
 }

@@ -1,11 +1,14 @@
 package lib.Page.FoodPage;
 
+import java.io.IOException;
 import java.util.Currency;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import lib.Page.Page;
+import lib.Page.RestaurantAdminPage.RestaurantAdminPageController;
 import src.Customer;
 import src.Food;
 import src.PageHandler;
@@ -13,8 +16,9 @@ import src.Restaurant;
 import src.RestaurantAdmin;
 import src.User;
 
-public class FoodPage extends Page {
-    private Food food;
+public class FoodPage implements Page {
+    public Food food;
+    private Parent root;
     private Restaurant restaurant;
     public Page previousPage;
 
@@ -53,14 +57,14 @@ public class FoodPage extends Page {
                     if (User.currUser instanceof RestaurantAdmin) {
                         String[] temp0 = input.split("\\s");
                         this.food.setName(temp0[2]);
-                        User.updateSQL("foods", "food_name", "food_id = "+this.food.getID(), temp0[2]);
+                        User.updateSQL("foods", "food_name", "food_id = " + this.food.getID(), temp0[2]);
                     }
                     break;
                 case 2: // edit price
                     if (User.currUser instanceof RestaurantAdmin) {
                         String[] temp1 = input.split("\\s");
                         this.food.setPrice(Double.parseDouble(temp1[2]));
-                        User.updateSQL("foods", "price", "food_id = "+this.food.getID(), temp1[2]);
+                        User.updateSQL("foods", "price", "food_id = " + this.food.getID(), temp1[2]);
                     }
                     break;
                 case 3:// add discount
@@ -160,14 +164,18 @@ public class FoodPage extends Page {
         }
     }
 
- 
-
     @Override
-    public FXMLLoader getLoader() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRoot'");
+    public Parent getRoot() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FoodPageScene.fxml"));
+            root = loader.load();
+            FoodPageSceneController controller = loader.getController();
+            controller.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return root;
+
     }
-
-
 
 }

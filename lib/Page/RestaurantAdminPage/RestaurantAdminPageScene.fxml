@@ -16,7 +16,7 @@
       </ScrollPane>
       <Pane prefHeight="67.0" prefWidth="400.0" style="-fx-background-color: #00c729;">
          <children>
-            <Label alignment="CENTER" layoutX="67.0" layoutY="5.0" prefHeight="57.0" prefWidth="266.0" text="Restaurant Admin Page" textFill="WHITE">
+            <Label fx:id="RestAdminPageLabel" alignment="CENTER" layoutX="67.0" layoutY="5.0" prefHeight="57.0" prefWidth="266.0" text="Restaurant Admin Page" textFill="WHITE">
                <font>
                   <Font name="Simplified Arabic" size="23.0" />
                </font>

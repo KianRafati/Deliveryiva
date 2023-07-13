@@ -21,7 +21,6 @@ public class Restaurant {
     private RestaurantAdmin owner;
     private ArrayList<Comment> comments = new ArrayList<>();
     private ArrayList<Rating> ratings = new ArrayList<>();
-    private Page previousPage;
 
     // ==============================================================================
     public Restaurant(String name, Node location, int ID, int Owner_id) {

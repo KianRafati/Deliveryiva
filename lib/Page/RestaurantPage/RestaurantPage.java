@@ -14,7 +14,7 @@ import src.RestaurantAdmin;
 import src.User;
 
 public class RestaurantPage implements Page {
-    private Restaurant restaurant;
+    public Restaurant restaurant;
     private int inputCount = 0;
     private int commentID = 0;
     private int respondID = 0;
@@ -206,11 +206,14 @@ public class RestaurantPage implements Page {
         }
     }
 
-
     @Override
     public Parent getRoot() {
         try {
-            root = FXMLLoader.load(getClass().getResource("RestaurantPageScene.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("RestaurantPageScene.fxml"));
+            root = loader.load();
+            RestaurantPageSceneController controller = loader.getController();
+            User.receiveMenu(restaurant);
+            controller.init();
         } catch (IOException e) {
             e.printStackTrace();
         }

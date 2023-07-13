@@ -167,6 +167,7 @@ public class RestaurantAdminPage implements Page {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("RestaurantAdminPageScene.fxml"));
             root = loader.load();
             RestaurantAdminPageController controller = loader.getController();
+            User.receiveRests(restAdmin.user_id);
             controller.init();
         } catch (IOException e) {
             e.printStackTrace();

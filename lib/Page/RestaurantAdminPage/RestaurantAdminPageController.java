@@ -22,6 +22,9 @@ public class RestaurantAdminPageController {
     RestaurantAdminPage restAdmPage = (RestaurantAdminPage)PageHandler.currPage;
 
     @FXML
+    private Label RestAdminPageLabel;
+
+    @FXML
     private Button BackBtn;
     
     @FXML
@@ -34,6 +37,7 @@ public class RestaurantAdminPageController {
 
     
     public void init() {
+        RestAdminPageLabel.setText(restAdmPage.getUser().username+"'s Page");
         VBox container = new VBox(); // Create a container to hold the boxes
         container.setSpacing(10); // Set the spacing between the boxes
         

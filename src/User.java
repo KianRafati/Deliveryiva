@@ -178,6 +178,8 @@ public abstract class User {
 
     public static void receiveRests(int owner_id) {
         try {
+            if (!((RestaurantAdmin) User.users.get(owner_id - 1)).getRests().isEmpty())
+                return;
             establishConnection();
             ResultSet resultSet = statement
                     .executeQuery("SELECT * FROM restaurants WHERE owner_id = " + owner_id + ";");
@@ -230,20 +232,21 @@ public abstract class User {
         try {
             establishConnection();
             ResultSet resultSet = statement
-                    .executeQuery("SELECT * FROM comments WHERE food_id = "+food.getID()+";");
+                    .executeQuery("SELECT * FROM comments WHERE food_id = " + food.getID() + ";");
             while (resultSet.next()) {
                 User user = getUser(Integer.parseInt(resultSet.getString("commenter_id")));
-                Comment comment = new Comment(Integer.parseInt(resultSet.getString("comment_id")), user, resultSet.getString("content"), food);
+                Comment comment = new Comment(Integer.parseInt(resultSet.getString("comment_id")), user,
+                        resultSet.getString("content"), food);
                 food.comments.add(comment);
-                if(resultSet.getString("to_comment_id") != null)
-                    comment.setTo(Integer.parseInt(resultSet.getString("to_comment_id")),food);
+                if (resultSet.getString("to_comment_id") != null)
+                    comment.setTo(Integer.parseInt(resultSet.getString("to_comment_id")), food);
             }
             terminateConnection();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
     public static void receiveMenu(Restaurant restaurant) {
         try {
             establishConnection();
@@ -252,6 +255,8 @@ public abstract class User {
             while (resultSet.next()) {
                 Food food = new Food(resultSet.getString("food_name"), Double.parseDouble(resultSet.getString("price")),
                         Integer.parseInt(resultSet.getString("food_id")), restaurant);
+                food.setDescription(resultSet.getString("food_description"));
+                food.setRating((int)Double.parseDouble(resultSet.getString("rating")));
                 restaurant.setMenu(food);
                 FoodPage foodPage = new FoodPage(food, restaurant);
                 food.setPage(foodPage);
@@ -389,5 +394,25 @@ public abstract class User {
 
     abstract public Page getPage();
 
+    public static String setRatingImage(int amount) {
+        switch (amount) {
+            case 0:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_0.png";
+            case 1:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_1.png";
+            case 2:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_2.png";
+            case 3:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_3.png";
+            case 4:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_4.png";
+            case 5:
+                return "E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Starrating_5.png";
+            default:
+                break;
+        }
+
+        return null;
+    }
 
 }

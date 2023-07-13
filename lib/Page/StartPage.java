@@ -37,6 +37,7 @@ public class StartPage extends Application implements Page {
         scene.setOnKeyPressed(this::handleKeyPressed);
 
         primaryStage = stage;
+        PageHandler.primaryStage = stage;
         primaryStage.setResizable(false);
         Image icon = new Image("E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\Deliveryiva_logo.png");
         primaryStage.getIcons().add(icon);
