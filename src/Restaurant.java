@@ -21,6 +21,7 @@ public class Restaurant {
     private RestaurantAdmin owner;
     private ArrayList<Comment> comments = new ArrayList<>();
     private ArrayList<Rating> ratings = new ArrayList<>();
+    private Page previousPage;
 
     // ==============================================================================
     public Restaurant(String name, Node location, int ID, int Owner_id) {
@@ -199,18 +200,6 @@ public class Restaurant {
         return rate;
     }
 
-    public double calculateRating(){
-        if(this.ratings.isEmpty())
-            return 0;
-
-        double rate = 0;
-        for (Rating rating : this.ratings) 
-            rate += rating.amount;
-        rate = rate/this.ratings.size();
-
-        return rate;
-    }
-
     public boolean actFood(String foodName) {
         for (Food food : this.menu)
             if (food.getName().equals(foodName)) {
@@ -252,7 +241,7 @@ public class Restaurant {
     public boolean selectFood(String foodName) {
         for (Food food : this.menu)
             if (food.getName().equals(foodName)) {
-                food.getPage().previousPage = PageHandler.currPage;
+                ((FoodPage)food.getPage()).previousPage = PageHandler.currPage;
                 PageHandler.changePage(food.getPage());
                 User.receiveComments(food);
                 return true;
@@ -415,5 +404,15 @@ public class Restaurant {
 
         System.out.println("you have not rated this restaurant!");
         return false;
+    }
+
+    public String getImagePath() {
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append("E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\RestaurantImages\\rest_"+this.ID+".png");
+        return pathBuilder.toString();
+    }
+
+    public String getDescription() {
+        return "some description";
     }
 }

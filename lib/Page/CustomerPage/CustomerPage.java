@@ -1,5 +1,11 @@
 package lib.Page.CustomerPage;
 
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import lib.Page.Page;
 import lib.Page.RestaurantPage.RestaurantPageCommands;
 import src.Customer;
@@ -14,9 +20,13 @@ public class CustomerPage extends Page {
 
     private Customer customer;
 
+    private Parent root;
+
     private int inputCount = 0;
 
     private int numOfComment = -1;
+
+    public Page previousPage;
 
     public Customer getUser(){
         return this.customer;
@@ -80,5 +90,16 @@ public class CustomerPage extends Page {
             inputCount = 0;
         }
     }
+
+    @Override
+    public FXMLLoader getLoader() {
+        try {
+            root = FXMLLoader.load(getClass().getResource("CustomerPageScene.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return root;
+    }
+
     
 }

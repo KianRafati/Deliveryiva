@@ -1,5 +1,11 @@
 package lib.Page.RestaurantPage;
 
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import lib.Page.Page;
 import src.Customer;
 import src.PageHandler;
@@ -7,12 +13,14 @@ import src.Restaurant;
 import src.RestaurantAdmin;
 import src.User;
 
-public class RestaurantPage extends Page {
+public class RestaurantPage implements Page {
     private Restaurant restaurant;
     private int inputCount = 0;
     private int commentID = 0;
     private int respondID = 0;
+    public Page previousPage;
     String delfood = null;
+    Parent root;
 
     public RestaurantPage(Restaurant restaurant) {
         this.restaurant = restaurant;
@@ -20,14 +28,11 @@ public class RestaurantPage extends Page {
 
     @Override
     public void run(String input) {
-        this.previousPage = this.restaurant.getOwner().getPage();
-
+        
         if (input.equals("back")) {
             PageHandler.changePage(this.previousPage);
             return;
         }
-
-        System.out.println("***********" + restaurant.getName() + "'s Restaurant page***********");
 
         if (inputCount == 0) {
             int counter = 0;
@@ -200,5 +205,17 @@ public class RestaurantPage extends Page {
             restaurant.editResond(commentID, respondID, User.currUser, input);
         }
     }
+
+
+    @Override
+    public Parent getRoot() {
+        try {
+            root = FXMLLoader.load(getClass().getResource("RestaurantPageScene.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return root;
+    }
+
 
 }

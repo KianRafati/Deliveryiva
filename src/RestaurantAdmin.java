@@ -7,7 +7,7 @@ import lib.Page.RestaurantAdminPage.RestaurantAdminPage;
 public class RestaurantAdmin extends User {
     private ArrayList<Restaurant> restaurants = new ArrayList<>();
     public Restaurant currRestaurant = null;
-    private RestaurantAdminPage restAdminPage;
+    private RestaurantAdminPage restAdminPage = (RestaurantAdminPage)page;
 
     RestaurantAdmin(String name,String password,int id){
         this.username = name;

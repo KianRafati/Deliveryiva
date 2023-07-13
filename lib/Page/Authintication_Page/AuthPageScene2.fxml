@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: e0e4e3;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lib.Page.Authintication_Page.AuthPageController">
+   <children>
+      <TextField fx:id="UsernameField" layoutX="100.0" layoutY="124.0" prefHeight="26.0" prefWidth="200.0" />
+      <Label layoutX="100.0" layoutY="107.0" text="Username:" />
+      <Label layoutX="101.0" layoutY="151.0" text="Password:" />
+      <Button fx:id="LoginBtn" alignment="CENTER" layoutX="177.0" layoutY="224.0" mnemonicParsing="false" onAction="#Login" text="Login" />
+      <Hyperlink fx:id="registerHyperlink" layoutX="228.0" layoutY="250.0" onAction="#Register" text="register" />
+      <Label layoutX="123.0" layoutY="253.0" prefHeight="18.0" prefWidth="118.0" text="New to Deliveryiva?" />
+      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="325.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../Assets/Deliveryiva_logo.png" />
+         </image>
+      </ImageView>
+      <PasswordField fx:id="PasswordField" layoutX="102.0" layoutY="169.0" prefHeight="26.0" prefWidth="200.0" />
+   </children>
+</AnchorPane>

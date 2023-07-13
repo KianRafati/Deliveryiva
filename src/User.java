@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 
+import lib.Page.Page;
 import lib.Page.FoodPage.FoodPage;
 import lib.Page.RestaurantPage.RestaurantPage;
 
@@ -24,6 +25,7 @@ public abstract class User {
     static String SQLpassword = "darkman.85";
     static String url = "jdbc:mysql://localhost:3306/deliveryivadb";
     static Statement statement = null;
+    protected Page page;
 
     // ********************************************************************
 
@@ -385,6 +387,7 @@ public abstract class User {
         }
     }
 
+    abstract public Page getPage();
 
 
 }

@@ -1,10 +1,13 @@
 package lib.Page.OrderPage;
 
+import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import lib.Page.Page;
 import lib.Page.RestaurantPage.RestaurantPageCommands;
 import src.*;
 
-public class OrderPage extends Page {
+public class OrderPage extends Application extends Page {
     Order order;
 
     @Override
@@ -50,6 +53,24 @@ public class OrderPage extends Page {
                     "***********Order " + this.order.getID() + " of " + this.order.getRest() + "'s page***********");
 
         }
+    }
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'run'");
+    }
+
+    @Override
+    public FXMLLoader getLoader() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRoot'");
+    }
+
+    @Override
+    public void start(Stage arg0) throws Exception {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'start'");
     }
 
 }

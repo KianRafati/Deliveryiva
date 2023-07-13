@@ -2,6 +2,9 @@ package lib.Page.FoodPage;
 
 import java.util.Currency;
 
+import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 import lib.Page.Page;
 import src.Customer;
 import src.Food;
@@ -13,6 +16,7 @@ import src.User;
 public class FoodPage extends Page {
     private Food food;
     private Restaurant restaurant;
+    public Page previousPage;
 
     private int inputCount = 0;
     private int commentID = 0;
@@ -155,5 +159,15 @@ public class FoodPage extends Page {
                 return;
         }
     }
+
+ 
+
+    @Override
+    public FXMLLoader getLoader() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRoot'");
+    }
+
+
 
 }

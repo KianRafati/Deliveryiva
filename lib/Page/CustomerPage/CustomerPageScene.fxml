@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: e0e4e3;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lib.Page.RestaurantAdminPage.RestaurantAdminPageController">
+   <children>
+      <Pane prefHeight="67.0" prefWidth="400.0" style="-fx-background-color: #00c729;">
+         <children>
+            <Label alignment="CENTER" layoutX="67.0" layoutY="5.0" prefHeight="57.0" prefWidth="266.0" text="Customer Page" textFill="WHITE">
+               <font>
+                  <Font name="Simplified Arabic" size="23.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label layoutX="14.0" layoutY="67.0" prefHeight="38.0" prefWidth="165.0" text="Local Restaurants:">
+         <font>
+            <Font name="Microsoft YaHei Light" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
