@@ -18,6 +18,7 @@ import lib.Page.Page;
 import src.Food;
 import src.PageHandler;
 import src.Restaurant;
+import src.RestaurantAdmin;
 import src.User;
 
 public class RestaurantPageSceneController {
@@ -51,6 +52,8 @@ public class RestaurantPageSceneController {
         container.setSpacing(10); // Set the spacing between the boxes
         
         for (Food food : restaurantPage.restaurant.getMenu()) {
+            if(!food.getStatus() && !(User.currUser instanceof RestaurantAdmin))
+                continue;
             ImageView imageView = new ImageView(); // Create an ImageView for the image
             imageView.setImage(new Image(food.getImagePath())); // Set the image path
             imageView.setFitWidth(100);

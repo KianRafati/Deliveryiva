@@ -55,6 +55,10 @@ public class FoodPageSceneController {
 
     private TextField editDescriptionTextField; // New TextField for editing the description
 
+    private TextField editCommentTextField;
+
+    private Comment clickedComment;
+
     private Button activateButton; // New Button to activate or deactivate the food
 
     public void init() {
@@ -63,7 +67,7 @@ public class FoodPageSceneController {
         FoodPageLabel.setText(foodPage.food.getName());
         RatingImage.setImage(new Image(User.setRatingImage(foodPage.food.getRating())));
         User.receiveComments(foodPage.food);
-        PriceLabel.setText(Double.toString(foodPage.food.getPrice())+"$");
+        PriceLabel.setText(Double.toString(foodPage.food.getPrice()) + "$");
 
         if (User.currUser instanceof RestaurantAdmin) {
             // Enable label, description, and activation editing for RestaurantAdmin
@@ -71,6 +75,14 @@ public class FoodPageSceneController {
             FoodDescriptionLabel.setOnMouseClicked(this::handleDescriptionEdit);
             PriceLabel.setOnMouseClicked(this::handlePriceEdit);
             createActivateButton();
+
+            // Adjust the layout of the elements
+            AnchorPane.setLeftAnchor(FoodPageLabel, 14.0);
+            AnchorPane.setTopAnchor(FoodPageLabel, 79.0);
+            AnchorPane.setLeftAnchor(FoodDescriptionLabel, 14.0);
+            AnchorPane.setTopAnchor(FoodDescriptionLabel, 229.0);
+            AnchorPane.setBottomAnchor(activateButton, 38.0);
+            AnchorPane.setLeftAnchor(activateButton, 14.0);
         } else if (User.currUser instanceof Customer) {
             // Disable label, description, and activation editing for Customer
         }
@@ -99,19 +111,11 @@ public class FoodPageSceneController {
             // Add hover and click functionality to the box
             anchorPane.setOnMouseEntered(event -> highlightBox(anchorPane)); // Highlight the box on mouse enter
             anchorPane.setOnMouseExited(event -> removeHighlight(anchorPane)); // Remove highlight on mouse exit
-            anchorPane.setOnMouseClicked(event -> handleBoxClick(comment)); // Invoke a method on box click
+            anchorPane.setOnMouseClicked(event -> handleBoxClick(event,comment)); // Invoke a method on box click
 
             container.getChildren().add(anchorPane); // Add the AnchorPane to the container
         }
         scrollAnchor.getChildren().add(container); // Add the container to the scrollAnchor
-
-        // Adjust the layout of the elements
-        AnchorPane.setLeftAnchor(FoodPageLabel, 14.0);
-        AnchorPane.setTopAnchor(FoodPageLabel, 79.0);
-        AnchorPane.setLeftAnchor(FoodDescriptionLabel, 14.0);
-        AnchorPane.setTopAnchor(FoodDescriptionLabel, 229.0);
-        AnchorPane.setBottomAnchor(activateButton, 38.0);
-        AnchorPane.setLeftAnchor(activateButton, 14.0);
     }
 
     private void highlightBox(AnchorPane anchorPane) {
@@ -122,9 +126,30 @@ public class FoodPageSceneController {
         anchorPane.setStyle(null);
     }
 
-    private void handleBoxClick(Comment comment) {
-        // comment.getPage().previousPage = PageHandler.currPage;
-        // PageHandler.changePage(restaurant.getPage());
+    private void handleBoxClick(MouseEvent event,Comment comment) {
+        clickedComment = comment;
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (event.getClickCount() == 2 && clickedComment.commenter.equals(User.currUser)) {
+                // Double-click to start editing the label
+                editCommentTextField = new TextField(clickedComment.content);
+                editCommentTextField.setPrefWidth(400);
+                editCommentTextField.setLayoutX(mainPane.getLayoutX());
+                editCommentTextField.setLayoutY(mainPane.getLayoutY());
+                mainPane.getChildren().add(editCommentTextField);
+                editCommentTextField.requestFocus();
+
+                // Set a listener to handle label editing completion
+                editCommentTextField.setOnAction(this::handleCommentEdit);
+            }
+        }
+    }
+
+    private void handleCommentEdit(ActionEvent event){
+        String newContent = editCommentTextField.getText();
+        editCommentTextField.setText(newContent);
+        mainPane.getChildren().remove(editCommentTextField);
+        clickedComment.setContent(newContent);
+        User.updateSQL("comments", "content", "comment_id = "+clickedComment.ID, "\""+newContent+"\"");
     }
 
     private void createActivateButton() {
@@ -144,9 +169,13 @@ public class FoodPageSceneController {
         boolean isActive = foodPage.food.getStatus();
         foodPage.food.setStatus(!isActive);
         activateButton.setText(foodPage.food.getStatus() ? "Deactivate" : "Activate");
+        if(foodPage.food.getStatus())
+            User.updateSQL("foods", "food_status", "food_id = "+foodPage.food.getID(),"1");
+        else
+            User.updateSQL("foods", "food_status", "food_id = "+foodPage.food.getID(),"0");
     }
 
-    private void handlePriceEdit(MouseEvent event){
+    private void handlePriceEdit(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             if (event.getClickCount() == 2) {
                 // Double-click to start editing the label
@@ -164,10 +193,11 @@ public class FoodPageSceneController {
     }
 
     private void handlePriceEditComplete(ActionEvent event) {
-        String newLabel = editLabelTextField.getText();
-        PriceLabel.setText(newLabel+"$");
+        String newPrice = editLabelTextField.getText();
+        PriceLabel.setText(newPrice + "$");
         mainPane.getChildren().remove(editLabelTextField);
-        foodPage.food.setPrice(Double.parseDouble(newLabel));;
+        foodPage.food.setPrice(Double.parseDouble(newPrice));
+        User.updateSQL("foods", "price", "food_id = "+foodPage.food.getID(),newPrice);
     }
 
     private void handleLabelEdit(MouseEvent event) {
@@ -192,6 +222,7 @@ public class FoodPageSceneController {
         FoodPageLabel.setText(newLabel);
         mainPane.getChildren().remove(editLabelTextField);
         foodPage.food.setName(newLabel);
+        User.updateSQL("foods", "food_name", "food_id = "+foodPage.food.getID(), "\""+newLabel+"\"");
     }
 
     private void handleDescriptionEdit(MouseEvent event) {
@@ -217,6 +248,7 @@ public class FoodPageSceneController {
         FoodDescriptionLabel.setText(newDescription);
         mainPane.getChildren().remove(editDescriptionTextField);
         foodPage.food.setDescription(newDescription);
+        User.updateSQL("foods", "food_description", "food_id = "+foodPage.food.getID(), "\""+newDescription+"\"");
     }
 
     @FXML

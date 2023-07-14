@@ -15,7 +15,7 @@ public class Customer extends User {
     // ********************************************************************
 
     public Node location;
-    ArrayList<Restaurant> localRests = new ArrayList<>();
+    public ArrayList<Restaurant> localRests = new ArrayList<>();
     ArrayList<Restaurant> favRests = new ArrayList<>();
     ArrayList<Rating> foodRatings = new ArrayList<>();
     ArrayList<Rating> restRatings = new ArrayList<>();

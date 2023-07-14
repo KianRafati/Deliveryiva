@@ -43,6 +43,10 @@ public class Restaurant {
         this.menu.add(food);
     }
 
+    public void setMenu(ArrayList<Food> arrayList){
+        this.menu = arrayList;
+    }
+
     public void setOwner(RestaurantAdmin owner){
         this.owner = owner;
     }

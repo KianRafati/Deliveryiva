@@ -42,8 +42,8 @@ public class AuthPageController {
 
     @FXML
     void CustomerClicked(ActionEvent event) {
-        Authintication_Page.inputBuilder.append("Customer");
-        Authintication_Page.inputbase = "Customer";
+        Authintication_Page.inputBuilder.append("customer");
+        Authintication_Page.inputbase = "customer";
         try {
             Parent root = FXMLLoader.load(getClass().getResource("AuthPageScene2.fxml"));
             stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
@@ -59,8 +59,8 @@ public class AuthPageController {
 
     @FXML
     void DeliveryClicked(ActionEvent event) {
-        Authintication_Page.inputBuilder.append("Delivery");
-        Authintication_Page.inputbase = "Delivery";
+        Authintication_Page.inputBuilder.append("delivery");
+        Authintication_Page.inputbase = "delivery";
         try {
             Parent root = FXMLLoader.load(getClass().getResource("AuthPageScene2.fxml"));
             stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
@@ -97,6 +97,7 @@ public class AuthPageController {
         Authintication_Page.inputBuilder.append(UsernameField.getText());
         Authintication_Page.inputBuilder.append(" ");
         Authintication_Page.inputBuilder.append(PasswordField.getText());
+        System.out.println(Authintication_Page.inputBuilder.toString());
         authPage.run(Authintication_Page.inputBuilder.toString());
     }
 

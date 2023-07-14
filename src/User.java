@@ -178,9 +178,9 @@ public abstract class User {
     }
 
     public static void receiveRests(int owner_id) {
+        if (!((RestaurantAdmin) User.users.get(owner_id - 1)).getRests().isEmpty())
+            return;
         try {
-            if (!((RestaurantAdmin) User.users.get(owner_id - 1)).getRests().isEmpty())
-                return;
             establishConnection();
             ResultSet resultSet = statement
                     .executeQuery("SELECT * FROM restaurants WHERE owner_id = " + owner_id + ";");
@@ -205,6 +205,8 @@ public abstract class User {
     }
 
     public static void receiveLocalRests(int user_location) {
+        if (!((Customer) User.currUser).localRests.isEmpty())
+            return;
         try {
             establishConnection();
             int min = user_location - DeliveryivaSettings.getInstance().DELIVERYIVA_LOCAL_RANGE;
@@ -230,6 +232,8 @@ public abstract class User {
     }
 
     public static void receiveComments(Food food) {
+        if (!food.comments.isEmpty())
+            return;
         try {
             establishConnection();
             ResultSet resultSet = statement
@@ -249,6 +253,8 @@ public abstract class User {
     }
 
     public static void receiveMenu(Restaurant restaurant) {
+        if (!restaurant.getMenu().isEmpty())
+            return;
         try {
             establishConnection();
             ResultSet resultSet = statement
@@ -257,8 +263,12 @@ public abstract class User {
                 Food food = new Food(resultSet.getString("food_name"), Double.parseDouble(resultSet.getString("price")),
                         Integer.parseInt(resultSet.getString("food_id")), restaurant);
                 food.setDescription(resultSet.getString("food_description"));
-                food.setRating((int)Double.parseDouble(resultSet.getString("rating")));
+                food.setRating((int) Double.parseDouble(resultSet.getString("rating")));
                 food.setPrice(Double.parseDouble(resultSet.getString("price")));
+                if (resultSet.getString("food_status").equals("1"))
+                    food.setStatus(true);
+                else if (resultSet.getString("food_status").equals("2"))
+                    food.setStatus(false);
                 restaurant.setMenu(food);
                 FoodPage foodPage = new FoodPage(food, restaurant);
                 food.setPage(foodPage);
@@ -376,7 +386,7 @@ public abstract class User {
             establishConnection();
             String dbOp = "UPDATE " + table_name + " SET " + column_name + " = " + updatedData + " WHERE " + condition
                     + ";";
-            statement.executeQuery(dbOp);
+            statement.executeUpdate(dbOp);
             terminateConnection();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
