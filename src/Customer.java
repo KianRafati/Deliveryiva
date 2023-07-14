@@ -120,4 +120,12 @@ public class Customer extends User {
         this.page = page;
     }
 
+    public int getQuantity(Food food) {
+        int quantity = 0;
+        for (Food aFood : this.cart) 
+            if(aFood.getName().equals(food.getName()))
+                quantity++;
+        return quantity;
+    }
+
 }

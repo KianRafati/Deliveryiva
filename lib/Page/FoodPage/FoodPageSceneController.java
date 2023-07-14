@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import src.Comment;
@@ -57,6 +58,8 @@ public class FoodPageSceneController {
 
     private TextField editCommentTextField;
 
+    private Label clickCountLabel = new Label();
+
     private Comment clickedComment;
 
     private Button activateButton; // New Button to activate or deactivate the food
@@ -85,6 +88,12 @@ public class FoodPageSceneController {
             AnchorPane.setLeftAnchor(activateButton, 14.0);
         } else if (User.currUser instanceof Customer) {
             // Disable label, description, and activation editing for Customer
+            mainPane.getChildren().add(clickCountLabel);
+            if(!((Customer)User.currUser).cart.isEmpty())
+                clickCountLabel.setText(Integer.toString(((Customer)User.currUser).getQuantity(foodPage.food)));
+            clickCountLabel.setLayoutX(100);
+            clickCountLabel.setLayoutY(250);
+            createAddToCartButton();
         }
 
         VBox container = new VBox(); // Create a container to hold the boxes
@@ -111,7 +120,7 @@ public class FoodPageSceneController {
             // Add hover and click functionality to the box
             anchorPane.setOnMouseEntered(event -> highlightBox(anchorPane)); // Highlight the box on mouse enter
             anchorPane.setOnMouseExited(event -> removeHighlight(anchorPane)); // Remove highlight on mouse exit
-            anchorPane.setOnMouseClicked(event -> handleBoxClick(event,comment)); // Invoke a method on box click
+            anchorPane.setOnMouseClicked(event -> handleBoxClick(event, comment)); // Invoke a method on box click
 
             container.getChildren().add(anchorPane); // Add the AnchorPane to the container
         }
@@ -126,7 +135,7 @@ public class FoodPageSceneController {
         anchorPane.setStyle(null);
     }
 
-    private void handleBoxClick(MouseEvent event,Comment comment) {
+    private void handleBoxClick(MouseEvent event, Comment comment) {
         clickedComment = comment;
         if (event.getButton() == MouseButton.PRIMARY) {
             if (event.getClickCount() == 2 && clickedComment.commenter.equals(User.currUser)) {
@@ -144,12 +153,12 @@ public class FoodPageSceneController {
         }
     }
 
-    private void handleCommentEdit(ActionEvent event){
+    private void handleCommentEdit(ActionEvent event) {
         String newContent = editCommentTextField.getText();
         editCommentTextField.setText(newContent);
         mainPane.getChildren().remove(editCommentTextField);
         clickedComment.setContent(newContent);
-        User.updateSQL("comments", "content", "comment_id = "+clickedComment.ID, "\""+newContent+"\"");
+        User.updateSQL("comments", "content", "comment_id = " + clickedComment.ID, "\"" + newContent + "\"");
     }
 
     private void createActivateButton() {
@@ -169,10 +178,10 @@ public class FoodPageSceneController {
         boolean isActive = foodPage.food.getStatus();
         foodPage.food.setStatus(!isActive);
         activateButton.setText(foodPage.food.getStatus() ? "Deactivate" : "Activate");
-        if(foodPage.food.getStatus())
-            User.updateSQL("foods", "food_status", "food_id = "+foodPage.food.getID(),"1");
+        if (foodPage.food.getStatus())
+            User.updateSQL("foods", "food_status", "food_id = " + foodPage.food.getID(), "1");
         else
-            User.updateSQL("foods", "food_status", "food_id = "+foodPage.food.getID(),"0");
+            User.updateSQL("foods", "food_status", "food_id = " + foodPage.food.getID(), "0");
     }
 
     private void handlePriceEdit(MouseEvent event) {
@@ -197,7 +206,7 @@ public class FoodPageSceneController {
         PriceLabel.setText(newPrice + "$");
         mainPane.getChildren().remove(editLabelTextField);
         foodPage.food.setPrice(Double.parseDouble(newPrice));
-        User.updateSQL("foods", "price", "food_id = "+foodPage.food.getID(),newPrice);
+        User.updateSQL("foods", "price", "food_id = " + foodPage.food.getID(), newPrice);
     }
 
     private void handleLabelEdit(MouseEvent event) {
@@ -222,7 +231,7 @@ public class FoodPageSceneController {
         FoodPageLabel.setText(newLabel);
         mainPane.getChildren().remove(editLabelTextField);
         foodPage.food.setName(newLabel);
-        User.updateSQL("foods", "food_name", "food_id = "+foodPage.food.getID(), "\""+newLabel+"\"");
+        User.updateSQL("foods", "food_name", "food_id = " + foodPage.food.getID(), "\"" + newLabel + "\"");
     }
 
     private void handleDescriptionEdit(MouseEvent event) {
@@ -248,7 +257,7 @@ public class FoodPageSceneController {
         FoodDescriptionLabel.setText(newDescription);
         mainPane.getChildren().remove(editDescriptionTextField);
         foodPage.food.setDescription(newDescription);
-        User.updateSQL("foods", "food_description", "food_id = "+foodPage.food.getID(), "\""+newDescription+"\"");
+        User.updateSQL("foods", "food_description", "food_id = " + foodPage.food.getID(), "\"" + newDescription + "\"");
     }
 
     @FXML
@@ -260,4 +269,36 @@ public class FoodPageSceneController {
     void Logout(ActionEvent event) {
         User.Logout();
     }
+
+    private void createAddToCartButton() {
+        ImageView plusImageView = new ImageView(new Image("E:\\Sharif University of Technology\\2th semester\\OOP\\Project\\Deliveryiva\\Deliveryiva\\lib\\Assets\\PlusButton.png"));
+        plusImageView.setFitWidth(100);
+        plusImageView.setFitHeight(100);
+        plusImageView.setOnMousePressed(event -> {
+            ActionEvent actionEvent = new ActionEvent();
+            handleAddToCartButtonClick(actionEvent);
+        });
+        
+        
+        // Set the position of the plus image view
+        plusImageView.setLayoutX(0.0);
+        plusImageView.setLayoutY(200.0);
+    
+        mainPane.getChildren().add(plusImageView);
+    }
+    
+    private void handleAddToCartButtonClick(ActionEvent event) {
+        if (User.currUser instanceof Customer) {
+            Customer customer = (Customer) User.currUser;
+            customer.addFoodToCart(foodPage.food, 1);
+            int clickCount = customer.getQuantity(foodPage.food);
+            String labelString = "<" + clickCount + ">";
+    
+            clickCountLabel.setText(labelString);
+            clickCountLabel.setTextFill(Color.RED);
+    
+        }
+    }
+    
+
 }
