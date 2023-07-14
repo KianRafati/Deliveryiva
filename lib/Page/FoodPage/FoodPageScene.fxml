@@ -27,12 +27,14 @@
       </Pane>
       <ImageView fx:id="FoodImage" fitHeight="128.0" fitWidth="135.0" layoutX="14.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="FoodDescriptionLabel" layoutX="14.0" layoutY="229.0" prefHeight="142.0" prefWidth="373.0" />
-      <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="353.0" prefHeight="200.0" prefWidth="374.0" vbarPolicy="ALWAYS">
+      <ScrollPane hbarPolicy="ALWAYS" layoutX="14.0" layoutY="353.0" prefHeight="200.0" prefWidth="374.0" vbarPolicy="ALWAYS">
         <content>
-          <AnchorPane fx:id="scrollPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+          <AnchorPane fx:id="scrollAnchor" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
         </content>
       </ScrollPane>
       <Label layoutX="194.0" layoutY="113.0" prefHeight="18.0" prefWidth="40.0" text="Rating:" />
       <ImageView fx:id="RatingImage" fitHeight="57.0" fitWidth="192.0" layoutX="194.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="194.0" layoutY="88.0" prefHeight="18.0" prefWidth="40.0" text="Price:" />
+      <Label fx:id="PriceLabel" layoutX="234.0" layoutY="78.0" prefHeight="38.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

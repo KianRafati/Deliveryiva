@@ -1,0 +1,5 @@
+.comment-box {
+    -fx-background-color: lightblue;
+    -fx-border-color: black;
+    -fx-padding: 10px;
+}

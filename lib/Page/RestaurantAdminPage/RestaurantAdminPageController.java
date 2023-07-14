@@ -16,6 +16,7 @@ import javafx.scene.text.FontWeight;
 import lib.Page.Page;
 import src.PageHandler;
 import src.Restaurant;
+import src.User;
 import javafx.scene.Node;
 
 public class RestaurantAdminPageController {
@@ -97,7 +98,7 @@ public class RestaurantAdminPageController {
     //TODO fix logout
     @FXML
     void Logout(ActionEvent event){
-        PageHandler.Logout();
+        User.Logout();
     }
 
     private void adjustScrollAnchorHeight() {

@@ -2,6 +2,7 @@ package lib.Page.FoodPage;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,12 +28,6 @@ public class FoodPageSceneController {
     private Button BackBtn;
 
     @FXML
-    private ImageView RatingImage;
-
-    @FXML
-    private AnchorPane mainPane;
-
-    @FXML
     private Label FoodDescriptionLabel;
 
     @FXML
@@ -45,7 +40,16 @@ public class FoodPageSceneController {
     private Button LogoutBtn;
 
     @FXML
-    private AnchorPane scrollPane;
+    private ImageView RatingImage;
+
+    @FXML
+    private Label PriceLabel;
+
+    @FXML
+    private AnchorPane mainPane;
+
+    @FXML
+    private AnchorPane scrollAnchor;
 
     private TextField editLabelTextField; // New TextField for editing the label
 
@@ -59,42 +63,48 @@ public class FoodPageSceneController {
         FoodPageLabel.setText(foodPage.food.getName());
         RatingImage.setImage(new Image(User.setRatingImage(foodPage.food.getRating())));
         User.receiveComments(foodPage.food);
-    
+        PriceLabel.setText(Double.toString(foodPage.food.getPrice())+"$");
+
         if (User.currUser instanceof RestaurantAdmin) {
             // Enable label, description, and activation editing for RestaurantAdmin
             FoodPageLabel.setOnMouseClicked(this::handleLabelEdit);
             FoodDescriptionLabel.setOnMouseClicked(this::handleDescriptionEdit);
+            PriceLabel.setOnMouseClicked(this::handlePriceEdit);
             createActivateButton();
         } else if (User.currUser instanceof Customer) {
             // Disable label, description, and activation editing for Customer
         }
-    
+
         VBox container = new VBox(); // Create a container to hold the boxes
         container.setSpacing(10); // Set the spacing between the boxes
-    
+
         for (Comment comment : foodPage.food.comments) {
-            // Create labels for the commenter's name and comment content
-            Label nameLabel = new Label(comment.commenter.username);
-            nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-    
-            Label descriptionLabel = new Label(comment.content);
-            descriptionLabel.setFont(Font.font("Arial", 12));
-    
-            VBox commentBox = new VBox(nameLabel, descriptionLabel); // Create a VBox to hold the labels
-            commentBox.getStyleClass().add("comment-box"); // Apply CSS style to the comment box
-    
-            commentBox.setOnMouseEntered(event -> highlightBox(commentBox)); // Highlight the comment box on mouse enter
-            commentBox.setOnMouseExited(event -> removeHighlight(commentBox)); // Remove highlight on mouse exit
-            commentBox.setOnMouseClicked(event -> handleBoxClick(comment)); // Invoke a method on comment box click
-    
-            container.getChildren().add(commentBox); // Add the comment box to the container
+
+            Label nameLabel = new Label(comment.commenter.username); // Create a label for the restaurant name
+            nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14)); // Set the font for the label
+
+            Label contentLabel = new Label(comment.content); // Create a label for the description
+            contentLabel.setFont(Font.font("Arial", 12)); // Set the font for the description
+
+            GridPane gridPane = new GridPane(); // Create a GridPane to hold the image, name, and description
+            gridPane.setHgap(10); // Set the horizontal gap between columns
+            gridPane.add(nameLabel, 0, 0, 1, 2); // Add the name label to the GridPane at column 0, row 2
+            gridPane.add(contentLabel, 1, 0, 1, 3); // Add the description label to the GridPane at column 1, row 0 and
+                                                    // span 1 column, 3 rows
+
+            AnchorPane anchorPane = new AnchorPane(gridPane); // Create an AnchorPane to hold the GridPane
+            AnchorPane.setLeftAnchor(gridPane, 0.0); // Align the GridPane to the left of the AnchorPane
+            AnchorPane.setRightAnchor(gridPane, 0.0); // Align the GridPane to the right of the AnchorPane
+
+            // Add hover and click functionality to the box
+            anchorPane.setOnMouseEntered(event -> highlightBox(anchorPane)); // Highlight the box on mouse enter
+            anchorPane.setOnMouseExited(event -> removeHighlight(anchorPane)); // Remove highlight on mouse exit
+            anchorPane.setOnMouseClicked(event -> handleBoxClick(comment)); // Invoke a method on box click
+
+            container.getChildren().add(anchorPane); // Add the AnchorPane to the container
         }
-    
-        // scrollPane.setFitToWidth(true); // Adjust the ScrollPane to fit the width
-        // scrollPane.setFitToHeight(true); // Adjust the ScrollPane to fit the height
-        // scrollPane.setContent(container); // Set the container as the content of the ScrollPane
-        
-    
+        scrollAnchor.getChildren().add(container); // Add the container to the scrollAnchor
+
         // Adjust the layout of the elements
         AnchorPane.setLeftAnchor(FoodPageLabel, 14.0);
         AnchorPane.setTopAnchor(FoodPageLabel, 79.0);
@@ -103,20 +113,19 @@ public class FoodPageSceneController {
         AnchorPane.setBottomAnchor(activateButton, 38.0);
         AnchorPane.setLeftAnchor(activateButton, 14.0);
     }
-    
-    private void highlightBox(VBox commentBox) {
-        commentBox.setStyle("-fx-background-color: lightblue; -fx-border-color: black;");
+
+    private void highlightBox(AnchorPane anchorPane) {
+        anchorPane.setStyle("-fx-background-color: lightblue; -fx-border-color: black;");
     }
-    
-    private void removeHighlight(VBox commentBox) {
-        commentBox.setStyle(null);
+
+    private void removeHighlight(AnchorPane anchorPane) {
+        anchorPane.setStyle(null);
     }
-    
+
     private void handleBoxClick(Comment comment) {
         // comment.getPage().previousPage = PageHandler.currPage;
         // PageHandler.changePage(restaurant.getPage());
-    }    
-    
+    }
 
     private void createActivateButton() {
         activateButton = new Button();
@@ -128,13 +137,37 @@ public class FoodPageSceneController {
         activateButton.setLayoutX(14.0);
         activateButton.setLayoutY(100.0);
 
-        scrollPane.getChildren().add(activateButton);
+        mainPane.getChildren().add(activateButton);
     }
 
     private void handleActivateButtonClick(ActionEvent event) {
         boolean isActive = foodPage.food.getStatus();
         foodPage.food.setStatus(!isActive);
         activateButton.setText(foodPage.food.getStatus() ? "Deactivate" : "Activate");
+    }
+
+    private void handlePriceEdit(MouseEvent event){
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (event.getClickCount() == 2) {
+                // Double-click to start editing the label
+                editLabelTextField = new TextField(Double.toString(foodPage.food.getPrice()));
+                editLabelTextField.setPrefWidth(PriceLabel.getWidth());
+                editLabelTextField.setLayoutX(PriceLabel.getLayoutX());
+                editLabelTextField.setLayoutY(PriceLabel.getLayoutY());
+                mainPane.getChildren().add(editLabelTextField);
+                editLabelTextField.requestFocus();
+
+                // Set a listener to handle label editing completion
+                editLabelTextField.setOnAction(this::handlePriceEditComplete);
+            }
+        }
+    }
+
+    private void handlePriceEditComplete(ActionEvent event) {
+        String newLabel = editLabelTextField.getText();
+        PriceLabel.setText(newLabel+"$");
+        mainPane.getChildren().remove(editLabelTextField);
+        foodPage.food.setPrice(Double.parseDouble(newLabel));;
     }
 
     private void handleLabelEdit(MouseEvent event) {
@@ -145,7 +178,7 @@ public class FoodPageSceneController {
                 editLabelTextField.setPrefWidth(FoodPageLabel.getWidth());
                 editLabelTextField.setLayoutX(FoodPageLabel.getLayoutX());
                 editLabelTextField.setLayoutY(FoodPageLabel.getLayoutY());
-                scrollPane.getChildren().add(editLabelTextField);
+                mainPane.getChildren().add(editLabelTextField);
                 editLabelTextField.requestFocus();
 
                 // Set a listener to handle label editing completion
@@ -157,7 +190,7 @@ public class FoodPageSceneController {
     private void handleLabelEditComplete(ActionEvent event) {
         String newLabel = editLabelTextField.getText();
         FoodPageLabel.setText(newLabel);
-        scrollPane.getChildren().remove(editLabelTextField);
+        mainPane.getChildren().remove(editLabelTextField);
         foodPage.food.setName(newLabel);
     }
 
@@ -168,9 +201,9 @@ public class FoodPageSceneController {
                 editDescriptionTextField = new TextField(FoodDescriptionLabel.getText());
                 editDescriptionTextField.setPrefWidth(FoodDescriptionLabel.getWidth());
                 editDescriptionTextField.setPrefHeight(FoodDescriptionLabel.getHeight());
-                editDescriptionTextField.setLayoutX(FoodPageLabel.getLayoutX());
-                editDescriptionTextField.setLayoutY(FoodPageLabel.getLayoutY());
-                scrollPane.getChildren().add(editDescriptionTextField);
+                editDescriptionTextField.setLayoutX(FoodDescriptionLabel.getLayoutX());
+                editDescriptionTextField.setLayoutY(FoodDescriptionLabel.getLayoutY());
+                mainPane.getChildren().add(editDescriptionTextField);
                 editDescriptionTextField.requestFocus();
 
                 // Set a listener to handle description editing completion
@@ -182,7 +215,7 @@ public class FoodPageSceneController {
     private void handleDescriptionEditComplete(ActionEvent event) {
         String newDescription = editDescriptionTextField.getText();
         FoodDescriptionLabel.setText(newDescription);
-        scrollPane.getChildren().remove(editDescriptionTextField);
+        mainPane.getChildren().remove(editDescriptionTextField);
         foodPage.food.setDescription(newDescription);
     }
 
@@ -193,6 +226,6 @@ public class FoodPageSceneController {
 
     @FXML
     void Logout(ActionEvent event) {
-        // Add logout functionality here
+        User.Logout();
     }
 }

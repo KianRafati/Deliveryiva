@@ -3,6 +3,7 @@ package src;
 import java.util.ArrayList;
 
 import lib.Page.Page;
+import lib.Page.Authintication_Page.Authintication_Page;
 import lib.Page.FoodPage.FoodPage;
 import lib.Page.RestaurantPage.RestaurantPage;
 
@@ -155,8 +156,8 @@ public abstract class User {
             System.out.println("Please log in first!");
         }
         currUser = null;
+        PageHandler.changePage(new Authintication_Page());
         System.out.println("Logged out successfully");
-        return;
     }
 
     public boolean ChangePass(String oldPass, String newPass) {
@@ -257,6 +258,7 @@ public abstract class User {
                         Integer.parseInt(resultSet.getString("food_id")), restaurant);
                 food.setDescription(resultSet.getString("food_description"));
                 food.setRating((int)Double.parseDouble(resultSet.getString("rating")));
+                food.setPrice(Double.parseDouble(resultSet.getString("price")));
                 restaurant.setMenu(food);
                 FoodPage foodPage = new FoodPage(food, restaurant);
                 food.setPage(foodPage);

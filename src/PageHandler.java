@@ -100,7 +100,7 @@ public class PageHandler {
         currPage.run(input);
     }
 
-    private static void terminate() {
+    public static void terminate() {
         writeFile();
         primaryStage.close();
     }
@@ -137,9 +137,4 @@ public class PageHandler {
             e.printStackTrace();
         }
     }
-
-    public static void Logout(){
-    
-    }
-
 }

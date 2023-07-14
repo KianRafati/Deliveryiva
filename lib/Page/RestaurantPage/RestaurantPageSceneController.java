@@ -18,6 +18,7 @@ import lib.Page.Page;
 import src.Food;
 import src.PageHandler;
 import src.Restaurant;
+import src.User;
 
 public class RestaurantPageSceneController {
     RestaurantPage restaurantPage = (RestaurantPage) PageHandler.currPage;
@@ -41,7 +42,7 @@ public class RestaurantPageSceneController {
 
     @FXML
     void Logout(ActionEvent event) {
-
+        User.Logout();
     }
 
     public void init() {
