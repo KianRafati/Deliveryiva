@@ -44,6 +44,7 @@ public class RestaurantAdminPageController {
         
         for (Restaurant restaurant : this.restAdmPage.getUser().getRests()) {
             ImageView imageView = new ImageView(); // Create an ImageView for the image
+            System.out.println(restaurant.getImagePath());
             imageView.setImage(new Image(restaurant.getImagePath())); // Set the image path
             imageView.setFitWidth(100);
             imageView.setFitHeight(100);

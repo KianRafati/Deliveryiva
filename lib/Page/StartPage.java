@@ -36,6 +36,7 @@ public class StartPage extends Application implements Page {
             root = FXMLLoader.load(getClass().getResource("StartPageScene.fxml"));
         else    
             root = User.currUser.getPage().getRoot();
+            
         Scene scene = new Scene(root);
 
         scene.setOnKeyPressed(this::handleKeyPressed);
